@@ -6,9 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
-
-
-class C_Fragment : Fragment() {
+class Fragment2 : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -18,7 +16,8 @@ class C_Fragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_c_, container, false)
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_2, container, false)
     }
-    
+
 }
