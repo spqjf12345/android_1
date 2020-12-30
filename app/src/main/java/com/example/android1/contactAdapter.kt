@@ -20,7 +20,6 @@ class contactAdapter(private val JsonList:ArrayList<list_item>):
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): contactAdapter.ViewHolder {
             val inflatedView = LayoutInflater.from(parent.context).inflate(R.layout.list_item, parent, false)
             return contactAdapter.ViewHolder(inflatedView)
-
         }
 
 
@@ -28,10 +27,9 @@ class contactAdapter(private val JsonList:ArrayList<list_item>):
        return JsonList.size
     }
 
-    override fun onBindViewHolder(holder: contactAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: contactAdapter.ViewHolder, position: Int) { //class ViewHolder을 연결
         holder.name.setText((JsonList.get(position).name))
         holder.number.setText((JsonList.get(position).number))
-
     }
 
 }

@@ -4,6 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 
+//3개의 프래그먼트 생성
 class PageAdapter(manager: FragmentManager): FragmentPagerAdapter(manager) {
     val mFragmentList = ArrayList<Fragment>()
     val mFragmentTitleList = ArrayList<String>()
