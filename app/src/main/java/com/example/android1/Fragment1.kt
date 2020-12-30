@@ -6,8 +6,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.fragment_a.*
 import org.json.JSONObject
 
 
@@ -20,6 +22,7 @@ class Fragment1 : Fragment() {
         val assetManager = resources.assets
         val inputStream = assetManager.open("Contacts.json")
         val jsonString = inputStream.bufferedReader().use{it.readText()}
+        private val addBtn : Button? = null
 
         val jObject = JSONObject(jsonString)
 
@@ -33,26 +36,20 @@ class Fragment1 : Fragment() {
             Log.d("TAG", "number($i): $number")
             list.add(list_item(name, number))
         }
-        /*
-        list.add(list_item("조소정", "010-3245-2959"))
-        list.add(list_item("이준용", "010-3245-2959"))
-        list.add(list_item("조소정", "010-3245-2959"))
-        list.add(list_item("이준용", "010-3245-2959"))
-         */
+        addButton.setOnClickListener{
+            val name =addName.text.toString()
+            val number = addNumber.text.toString()
+            if(name.length != 0 && number.length != 0){
+                list.add(list_item(name, number))
+            }
+        }
     }
-
 
     //여기에 그리기
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        //val mAdapter = contactAdapter(list)
-        //mRecyclerView.adapter = mAdapter
-
-        //val lm = LinearLayoutManager(this)
-        //mRecyclerView.layoutManager = lm
-        //mRecyclerView.setHasFixedSize(true)
 
 
         var rootView =  inflater.inflate(R.layout.fragment_a, container, false)
