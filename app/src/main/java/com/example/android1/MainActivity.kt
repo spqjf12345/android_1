@@ -10,9 +10,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val adapter = PageAdapter(supportFragmentManager)
-        adapter.addFragment(A_Fragment(), "연락처")
-        adapter.addFragment(B_Fragment(), "사진")
-        adapter.addFragment(C_Fragment(), "자유")
+        adapter.addFragment(Fragment1(), "연락처")
+        adapter.addFragment(Fragment2(), "사진")
+        adapter.addFragment(Fragment3(), "자유")
         viewPager.adapter = adapter
         tabLayout.setupWithViewPager(viewPager)
     }
