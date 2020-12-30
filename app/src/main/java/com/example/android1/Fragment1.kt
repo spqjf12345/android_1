@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,8 +26,8 @@ class Fragment1 : Fragment() {
             if(name.isNotEmpty() && number.isNotEmpty()){
                 list.add(list_item(name, number))
             }
+            refreshFragment(this, parentFragmentManager)
         }
-        refreshFragment(this, supportFragmentManager())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
