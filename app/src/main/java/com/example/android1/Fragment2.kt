@@ -14,9 +14,13 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_2.*
 
 class Fragment2 : Fragment() {
+    lateinit var recyclerView2 : RecyclerView
     val image_list = ArrayList<image_item>()
     private val pickImage = 100
     private val capturePhoto = 101
@@ -24,10 +28,12 @@ class Fragment2 : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val mAdapter = ImageAdapter(this, image_list)
+
+
 
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
         btn_camera.setOnClickListener{
             takePicture()
         }
@@ -41,7 +47,14 @@ class Fragment2 : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_2, container, false)
+        recyclerView2 = rootView.findViewById(R.id.rv_image!!)as RecyclerView
+        recyclerView2.layoutManager = GridLayoutManager(this.context,1)
+        recyclerView2.adapter = ImageAdapter(image_list)
+        recyclerView2.setHasFixedSize(true)
 
+        /*val mAdapter = ImageAdapter(image_list)
+        rv_image.adapter = mAdapter
+        rv_image.layoutManager = LinearLayoutManager(this.context)*/
         return rootView
     }
 
