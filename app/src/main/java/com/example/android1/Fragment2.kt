@@ -1,6 +1,8 @@
 package com.example.android1
 
+import android.app.Activity.RESULT_OK
 import android.content.Intent
+import android.net.Uri
 
 import android.os.Bundle
 import android.provider.MediaStore
@@ -9,11 +11,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.gun0912.tedpermission.PermissionListener
-import com.gun0912.tedpermission.TedPermission
 import kotlinx.android.synthetic.main.fragment_2.*
 
 class Fragment2 : Fragment() {
+
+    private val pickImage = 100
+    private var imageUri:Uri? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -36,21 +40,22 @@ class Fragment2 : Fragment() {
         return rootView
     }
 
-     fun takePicture() {
+    private fun loadImage(){
+        val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+        startActivityForResult(gallery, pickImage)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(resultCode == RESULT_OK && requestCode == pickImage){
+            imageUri = data?.data
+            gallery.setImageURI(imageUri)
+        }
+    }
+
+    private fun takePicture() {
+        //카메라 앱 실행
         var intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         startActivity(intent)
     }
-
-
-    val gallery =0
-
-    fun loadImage(){
-        val intent = Intent()
-        intent.type = "image/*"
-        intent.action = Intent.ACTION_GET_CONTENT
-        startActivityForResult(Intent.createChooser(intent, "load picture"), gallery)
-    }
-
-
-
 }
