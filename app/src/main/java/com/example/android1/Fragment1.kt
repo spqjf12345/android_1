@@ -2,11 +2,11 @@ package com.example.android1
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentActivity
+import android.widget.CheckBox
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,6 +28,22 @@ class Fragment1 : Fragment() {
             }
             refreshFragment(this, parentFragmentManager)
         }
+        /*delButton.setOnClickListener{//delete button 클릭 시
+
+
+            val cbx = itemClicked.cb_delete
+            CheckBox cbx = (CheckBox)itemClick
+            if (cb_delete.isChecked){
+
+            }
+            val curPos: Int = adapterPosition
+            //체크 버튼 눌림
+            if(){
+                list.remove()//name과 number
+            }else{//안눌림
+                if()//체크 버튼 하나도 눌려 있지 않을 때
+            }
+        }*/
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,15 +69,11 @@ class Fragment1 : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-
         var rootView =  inflater.inflate(R.layout.fragment_a, container, false)
-
         recyclerView1 = rootView.findViewById(R.id.rv_json!!)as RecyclerView
         recyclerView1.layoutManager = LinearLayoutManager(this.context)
         recyclerView1.adapter = contactAdapter(list)
         recyclerView1.setHasFixedSize(true)
-
         return rootView
     }
 

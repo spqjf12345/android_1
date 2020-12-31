@@ -1,9 +1,14 @@
 package com.example.android1
 
+
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
+import com.gun0912.tedpermission.PermissionListener
+import com.gun0912.tedpermission.TedPermission
+
 import kotlinx.android.synthetic.main.activity_main.*
-import androidx.recyclerview.widget.LinearLayoutManager
+
 
 class MainActivity : AppCompatActivity() {
     
@@ -18,5 +23,35 @@ class MainActivity : AppCompatActivity() {
         adapter.addFragment(Fragment3(), "자유")
         viewPager.adapter = adapter
         tabLayout.setupWithViewPager(viewPager)
+        //권한 허용
+        getPermission()
+
     }
+
+    private fun getPermission() {
+        var permission = object: PermissionListener {
+            override fun onPermissionGranted() {
+                Toast.makeText(this@MainActivity,"권한이 허용되었습니다", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                Toast.makeText(this@MainActivity,"권한이 거부되었습니다", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        TedPermission.with(this)
+            .setPermissionListener(permission)
+            .setRationaleMessage("카메라 사용을 위해 권한을 허용해주세요")
+            .setDeniedMessage("권한을 거부하였습니다.")
+            .setPermissions(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.CAMERA)
+            .check()
+    }
+
+
+
+
+
+
+
 }
+
