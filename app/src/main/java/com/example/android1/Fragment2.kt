@@ -2,6 +2,7 @@ package com.example.android1
 
 import android.app.Activity.RESULT_OK
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 
 import android.os.Bundle
@@ -16,7 +17,9 @@ import kotlinx.android.synthetic.main.fragment_2.*
 class Fragment2 : Fragment() {
 
     private val pickImage = 100
+    private val capturePhoto = 101
     private var imageUri:Uri? = null
+    private var imagePath:Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,11 +54,16 @@ class Fragment2 : Fragment() {
             imageUri = data?.data
             gallery.setImageURI(imageUri)
         }
+        if(resultCode == RESULT_OK && requestCode == capturePhoto){
+            var bundle : Bundle? = data?.getExtras()
+            var bitmap : Bitmap = bundle?.get("data") as Bitmap
+            gallery.setImageBitmap(bitmap)
+        }
     }
 
     private fun takePicture() {
         //카메라 앱 실행
-        var intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        startActivity(intent)
+        var capture = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        startActivityForResult(capture, capturePhoto)
     }
 }
