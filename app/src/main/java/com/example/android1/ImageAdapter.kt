@@ -1,36 +1,35 @@
 package com.example.android1
 
-import android.media.Image
-import android.net.Uri
-import android.provider.ContactsContract
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.squareup.picasso.Picasso
 
-class ImageAdapter(private val ImageList:ArrayList<Uri>): RecyclerView.Adapter<ImageAdapter.ViewHolder>(){
-    class ViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){
-        var image = itemView.findViewById<ImageView>(R.id.gallery)
+class ImageAdapter(val context: Context, val imageList:ArrayList<image_item>):
+    RecyclerView.Adapter<ImageAdapter.Holder>(){
+
+    inner class Holder(itemView: View?) : RecyclerView.ViewHolder(itemView){
+        val image = itemView?.findViewById<ImageView>(R.id.image_holder)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val inflatedView = LayoutInflater.from(parent.context).inflate(R.layout.image_item, parent, false)
-        return ImageAdapter.ViewHolder(inflatedView)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
+        val view = LayoutInflater.from(context).inflate(R.layout.image_item, parent, false)
+        return Holder(view)
+    }
+
+    override fun onBindViewHolder(holder: Holder, position: Int) {
+        if(imageList.get(position).isPhoto){
+            holder.image.setImageBitmap(imageList.get(position).photo)
+        }
+        else{
+            holder.image.setImageURI(imageList.get(position).path)
+        }
     }
 
     override fun getItemCount(): Int {
-        val size = ImageList.size
-        return size
+        return imageList.size
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.image.setImageResource(ImageList[position])
-
-
-        //list_image에 ADD 시킨 ImageList를 imageresource로 출력
-       // holder.image.setImageResource()
-    }
 }

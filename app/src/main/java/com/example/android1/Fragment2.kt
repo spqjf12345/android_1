@@ -7,30 +7,24 @@ import android.net.Uri
 
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import kotlinx.android.synthetic.main.fragment_2.*
 
 class Fragment2 : Fragment() {
-
+    val image_list = ArrayList<image_item>()
     private val pickImage = 100
     private val capturePhoto = 101
     private var imageUri:Uri? = null
-    private var imagePath:Uri? = null
-    lateinit var recyclerView2 : RecyclerView
-
-    //string 배열로 imageList에 add 필요
-    var imageList = ArrayList<Uri>()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val mAdapter = ImageAdapter(this, image_list)
 
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -47,10 +41,7 @@ class Fragment2 : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_2, container, false)
-        recyclerView2 = rootView.findViewById(R.id.rv_image!!)as RecyclerView
-        recyclerView2.layoutManager = LinearLayoutManager(this.context)
-        recyclerView2.adapter = ImageAdapter(imageList)
-        recyclerView2.setHasFixedSize(true)
+
         return rootView
     }
 
@@ -61,19 +52,19 @@ class Fragment2 : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(resultCode == RESULT_OK && requestCode == pickImage){//갤러리
-            imageUri = data?.data
-            imageList.add(imageUri)
-            Log.d("imageUri", imageUri.toString())
-            Log.d("imageList", imageList.toString())
-
-
-            //gallery.setImageURI(imageUri)
-        }
-        if(resultCode == RESULT_OK && requestCode == capturePhoto){//카메라
-            var bundle : Bundle? = data?.getExtras()
-            var bitmap : Bitmap = bundle?.get("data") as Bitmap
-            //gallery.setImageBitmap(bitmap)
+        if(resultCode == RESULT_OK) {
+            if (requestCode == pickImage) {
+                imageUri = data?.data
+                image_list.add(image_item(false, null, imageUri))
+                //gallery.setImageURI(imageUri)
+            }
+            if (requestCode == capturePhoto) {
+                var bundle: Bundle? = data?.getExtras()
+                var bitmap: Bitmap = bundle?.get("data") as Bitmap
+                image_list.add(image_item(true, bitmap, null))
+                //gallery.setImageBitmap(bitmap)
+            }
+            refreshFragment(this, parentFragmentManager)
         }
     }
 
@@ -81,5 +72,10 @@ class Fragment2 : Fragment() {
         //카메라 앱 실행
         var capture = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         startActivityForResult(capture, capturePhoto)
+    }
+
+    fun refreshFragment(fragment: Fragment, fragmentManager: FragmentManager){
+        var ft: FragmentTransaction = fragmentManager.beginTransaction()
+        ft.detach(fragment).attach(fragment).commit()
     }
 }
