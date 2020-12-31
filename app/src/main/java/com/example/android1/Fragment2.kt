@@ -48,7 +48,7 @@ class Fragment2 : Fragment() {
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_2, container, false)
         recyclerView2 = rootView.findViewById(R.id.rv_image!!)as RecyclerView
-        recyclerView2.layoutManager = GridLayoutManager(this.context,1)
+        recyclerView2.layoutManager = GridLayoutManager(this.context,3)
         recyclerView2.adapter = ImageAdapter(image_list)
         recyclerView2.setHasFixedSize(true)
 
