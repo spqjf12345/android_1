@@ -7,8 +7,8 @@
     android:layout_height="match_parent"
     tools:context=".Fragment2">
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/gallery"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_image"
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:numColumns="3"
