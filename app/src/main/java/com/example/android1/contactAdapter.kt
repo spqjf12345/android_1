@@ -6,17 +6,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import com.squareup.picasso.Picasso
+import com.squareup.picasso.Picasso.*
 import kotlinx.android.synthetic.main.fragment_a.*
 import kotlinx.android.synthetic.main.list_item.*
 
 
 class contactAdapter(private val JsonList:ArrayList<list_item>):
         RecyclerView.Adapter<contactAdapter.ViewHolder>(){
-
     class ViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){
         var name = itemView.findViewById<TextView>(R.id.tv_name)
         var number = itemView.findViewById<TextView>(R.id.tv_number)
     }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): contactAdapter.ViewHolder {
             val inflatedView = LayoutInflater.from(parent.context).inflate(R.layout.list_item, parent, false)
@@ -35,9 +37,6 @@ class contactAdapter(private val JsonList:ArrayList<list_item>):
                     }
 
                 })
-
-
-
             }
         }
 
@@ -46,6 +45,7 @@ class contactAdapter(private val JsonList:ArrayList<list_item>):
     }
 
     override fun onBindViewHolder(holder: contactAdapter.ViewHolder, position: Int) { //class ViewHolder을 연결
+
         holder.name.setText((JsonList.get(position).name))
         holder.number.setText((JsonList.get(position).number))
     }
