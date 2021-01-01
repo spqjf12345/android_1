@@ -6,11 +6,14 @@ import android.view.LayoutInflater
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Filter
 import android.widget.TextView
 import android.widget.Toast
+import java.util.*
+import kotlin.collections.ArrayList
 
 
-class contactAdapter(private val JsonList:ArrayList<list_item>):
+class contactAdapter(private val JsonList:ArrayList<list_item>, private var filterList:ArrayList<list_item>):
         RecyclerView.Adapter<contactAdapter.ViewHolder>(){
     class ViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){
         var name = itemView.findViewById<TextView>(R.id.tv_name)
@@ -25,7 +28,7 @@ class contactAdapter(private val JsonList:ArrayList<list_item>):
                 itemView.setOnLongClickListener(object :View.OnLongClickListener{
                     override fun onLongClick(v: View?): Boolean {
                         val curPos: Int = adapterPosition
-                        var item: list_item = JsonList.get(curPos)
+                        var item: list_item = filterList.get(curPos)
                         //JsonList.removeAt(curPos)
                         Toast.makeText(parent.context,
                             "${curPos}\n ${item.name}\n ${item.number}",
@@ -38,7 +41,7 @@ class contactAdapter(private val JsonList:ArrayList<list_item>):
                 itemView.setOnClickListener(object:View.OnClickListener{
                     override fun onClick(v: View?) {
                         val curPos: Int = adapterPosition
-                        var item: list_item = JsonList.get(curPos)
+                        var item: list_item = filterList.get(curPos)
                         val intent_call = Intent(Intent.ACTION_CALL, Uri.parse("tel:"+item.number))
                         parent.context.startActivity(intent_call)
                     }
@@ -47,17 +50,46 @@ class contactAdapter(private val JsonList:ArrayList<list_item>):
         }
 
     override fun getItemCount(): Int {
-       return JsonList.size
+       return filterList.size
     }
 
     override fun onBindViewHolder(holder: contactAdapter.ViewHolder, position: Int) { //class ViewHolder을 연결
-
-        holder.name.setText((JsonList.get(position).name))
-        holder.number.setText((JsonList.get(position).number))
+        holder.name.setText((filterList.get(position).name))
+        holder.number.setText((filterList.get(position).number))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int, payloads: MutableList<Any>) {
         super.onBindViewHolder(holder, position, payloads)
+    }
+
+    fun filter(charText:String){
+        var charTexts = charText.toLowerCase(Locale.getDefault())
+        filterList.clear()
+        if(charTexts.isEmpty()){
+           filterList.addAll(JsonList)
+        }
+        else{
+            for(item:list_item){
+                val name:String =
+            }
+        }
+
+    }
+
+    public void filter(String charText) {
+        charText = charText.toLowerCase(Locale.getDefault());
+        potionList.clear();
+        if (charText.length() == 0) {
+            potionList.addAll(arrayList);
+        } else {
+            for (Potion potion : arrayList) {
+                String name = context.getResources().getString(potion.name);
+                if (name.toLowerCase().contains(charText)) {
+                    potionList.add(potion);
+                }
+            }
+        }
+        notifyDataSetChanged();
     }
 
 }
