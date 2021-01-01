@@ -14,7 +14,6 @@ class ShowBigImage: AppCompatActivity() {
 
         val big_image_intent: Intent = Intent.getIntentOld()
         val item:image_item = big_image_intent.getSerializableExtra("big_image_source")
-        big_image_intent.getextra
         if(item.isPhoto){
             big_gallery.setImageBitmap(item.photo)
         }
