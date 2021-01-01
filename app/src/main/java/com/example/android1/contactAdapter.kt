@@ -1,15 +1,13 @@
 package com.example.android1
 
+import android.content.Intent
+import android.net.Uri
 import android.view.LayoutInflater
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
-import com.squareup.picasso.Picasso
-import com.squareup.picasso.Picasso.*
-import kotlinx.android.synthetic.main.fragment_a.*
-import kotlinx.android.synthetic.main.list_item.*
 
 
 class contactAdapter(private val JsonList:ArrayList<list_item>):
@@ -36,6 +34,14 @@ class contactAdapter(private val JsonList:ArrayList<list_item>):
                         return true
                     }
 
+                })
+                itemView.setOnClickListener(object:View.OnClickListener{
+                    override fun onClick(v: View?) {
+                        val curPos: Int = adapterPosition
+                        var item: list_item = JsonList.get(curPos)
+                        val intent_call = Intent(Intent.ACTION_CALL, Uri.parse("tel:"+item.number))
+                        parent.context.startActivity(intent_call)
+                    }
                 })
             }
         }
