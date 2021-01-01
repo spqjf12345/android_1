@@ -1,6 +1,8 @@
 package com.example.android1
 
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.ContactsContract
@@ -17,7 +19,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_a.*
-
+import kotlinx.android.synthetic.main.list_item.*
 
 class Fragment1 : Fragment() {
     val list = ArrayList<list_item>()
@@ -41,20 +43,8 @@ class Fragment1 : Fragment() {
             refreshFragment(this, parentFragmentManager)
         }
 
-        /*delButton.setOnClickListener{//delete button 클릭 시
-            val cbx = itemClicked.cb_delete
-            CheckBox cbx = (CheckBox)itemClick
-            if (cb_delete.isChecked){
 
-            }
-            val curPos: Int = adapterPosition
-            //체크 버튼 눌림
-            if(){
-                list.remove()//name과 number
-            }else{//안눌림
-                if()//체크 버튼 하나도 눌려 있지 않을 때
-            }
-        }*/
+
     }
 
     override fun onRequestPermissionsResult(
