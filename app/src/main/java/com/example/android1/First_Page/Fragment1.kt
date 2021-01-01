@@ -6,13 +6,17 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.ContactsContract
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -20,6 +24,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_a.*
 import kotlinx.android.synthetic.main.list_item.*
+import java.util.Locale.filter
+import com.example.android1.contactAdapter as contactAdapter1
 
 class Fragment1 : Fragment() {
     val list = ArrayList<list_item>()
@@ -117,6 +123,21 @@ class Fragment1 : Fragment() {
             ActivityCompat.requestPermissions(this.requireActivity(), permissions, 99)
         }
 
+        contact_Filter.addTextChangedListener(object: TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                //contactAdapter1
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                TODO("Not yet implemented")
+            }
+
+        })
+
             /*val assetManager = resources.assets
             val inputStream = assetManager.open("Contacts.json")
             val jsonString = inputStream.bufferedReader().use { it.readText() }
@@ -130,7 +151,7 @@ class Fragment1 : Fragment() {
                 Log.d("TAG", "number($i): $number")
                 list.add(list_item(name, number))
             }*/
-        }
+    }
 
     //여기에 그리기
     override fun onCreateView(
@@ -140,7 +161,7 @@ class Fragment1 : Fragment() {
         var rootView =  inflater.inflate(R.layout.fragment_a, container, false)
         recyclerView1 = rootView.findViewById(R.id.rv_json!!)as RecyclerView
         recyclerView1.layoutManager = LinearLayoutManager(this.context)
-        recyclerView1.adapter = contactAdapter(list)
+        recyclerView1.adapter = contactAdapter1(list)
         recyclerView1.setHasFixedSize(true)
         return rootView
     }
