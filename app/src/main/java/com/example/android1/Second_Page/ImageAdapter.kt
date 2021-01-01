@@ -21,7 +21,8 @@ class ImageAdapter(val imageList:ArrayList<image_item>):
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): viewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.image_item, parent, false)
-        return viewHolder(view).apply{
+        return viewHolder(view)
+        /*return viewHolder(view).apply{
             itemView.setOnClickListener(object:View.OnClickListener{
                 override fun onClick(v: View?) {
                     val curPos: Int = adapterPosition
@@ -32,6 +33,7 @@ class ImageAdapter(val imageList:ArrayList<image_item>):
                 }
             })
         }
+        */
     }
 
     override fun onBindViewHolder(holder: viewHolder, position: Int) {

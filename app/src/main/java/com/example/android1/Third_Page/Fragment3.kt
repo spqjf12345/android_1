@@ -29,7 +29,7 @@ class Fragment3 : Fragment() {
     }
 
     private fun getLocation(){
-        val lm = getSystemService
+        //val lm = getSystemService
     }
 
 }

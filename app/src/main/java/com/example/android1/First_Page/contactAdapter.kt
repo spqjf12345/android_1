@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
+import android.widget.Filter
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
@@ -17,6 +18,7 @@ import kotlinx.android.synthetic.main.list_item.view.*
 class contactAdapter(private val JsonList:ArrayList<list_item>):
         RecyclerView.Adapter<contactAdapter.ViewHolder>(){
 
+    private var filterList:ArrayList<list_item> = JsonList
 
     class ViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){
 
@@ -37,17 +39,12 @@ class contactAdapter(private val JsonList:ArrayList<list_item>):
             }
             checkbox.isChecked = checkBoxList[num].checked
             checkbox.setOnClickListener{
-                if(checkbox.isChecked){
-                    checkBoxList[num].checked = true
-                }else{
-                    checkBoxList[num].checked = false
-                }
+                checkBoxList[num].checked = checkbox.isChecked
             }
             Log.d("checkbox",checkbox.toString())
         }
 
     }
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): contactAdapter.ViewHolder {
             val inflatedView = LayoutInflater.from(parent.context).inflate(R.layout.list_item, parent, false)
@@ -56,7 +53,7 @@ class contactAdapter(private val JsonList:ArrayList<list_item>):
                 itemView.setOnLongClickListener(object :View.OnLongClickListener{
                     override fun onLongClick(v: View?): Boolean {
                         val curPos: Int = adapterPosition
-                        var item: list_item = JsonList.get(curPos)
+                        var item: list_item = filterList.get(curPos)
                         //JsonList.removeAt(curPos)
                         Toast.makeText(parent.context,
                             "${curPos}\n ${item.name}\n ${item.number}",
@@ -70,13 +67,13 @@ class contactAdapter(private val JsonList:ArrayList<list_item>):
                 /* call */
                 itemView.iv_call.setOnClickListener{
                     val curPos: Int = adapterPosition
-                    var item: list_item = JsonList.get(curPos)
+                    var item: list_item = filterList.get(curPos)
                     val intent_call = Intent(Intent.ACTION_CALL, Uri.parse("tel:"+item.number))
                     parent.context.startActivity(intent_call)
                 }
                 itemView.iv_mms.setOnClickListener{
                     val curPos: Int = adapterPosition
-                    var item: list_item = JsonList.get(curPos)
+                    var item: list_item = filterList.get(curPos)
                     val intent_mms = Intent(Intent.ACTION_VIEW,  Uri.parse("tel:" + item.number))
                     parent.context.startActivity(intent_mms)
 
@@ -104,19 +101,45 @@ class contactAdapter(private val JsonList:ArrayList<list_item>):
         }
 
     override fun getItemCount(): Int {
-       return JsonList.size
+       return this.filterList?.size!!
     }
 
     override fun onBindViewHolder(holder: contactAdapter.ViewHolder, position: Int) { //class ViewHolder을 연결
 
-        holder.name.setText((JsonList.get(position).name))
-        holder.number.setText((JsonList.get(position).number))
+        holder.name.setText((filterList!![position].name))
+        holder.number.setText((filterList!!.get(position).number))
         //holder.checkBox.setChecked();
 
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int, payloads: MutableList<Any>) {
         super.onBindViewHolder(holder, position, payloads)
+    }
+
+    override fun getFilter(): Filter{
+        return object : Filter(){
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                val charString = constraint.toString()
+                filterList.clear()
+                if(charString.isEmpty()){
+                    filterList.addAll(JsonList)
+                }else{
+                    val filterPattern = charString.toLowerCase()
+                    for(item in JsonList) {
+                        if (item.name.toLowerCase().contains(filterPattern)){
+                            filterList.add(item)
+                        }
+                    }
+                }
+                return FilterResults().also {
+                    it.values = filterList
+                }
+            }
+
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                notifyDataSetChanged()
+            }
+        }
     }
 
 }

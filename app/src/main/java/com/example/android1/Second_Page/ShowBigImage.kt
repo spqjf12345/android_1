@@ -12,7 +12,7 @@ class ShowBigImage: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.big_image)
 
-        val big_image_intent: Intent = Intent.getIntentOld()
+        /*val big_image_intent: Intent = Intent.getIntentOld()
         val item:image_item = big_image_intent.getSerializableExtra("big_image_source")
         if(item.isPhoto){
             big_gallery.setImageBitmap(item.photo)
@@ -20,9 +20,11 @@ class ShowBigImage: AppCompatActivity() {
         else{
             big_gallery.setImageURI(item.path)
         }
+         */
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         finish()
+        return true
     }
 }
