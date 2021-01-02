@@ -1,11 +1,13 @@
 package com.example.android1
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class ImageAdapter(val imageList:ArrayList<image_item>):
@@ -28,6 +30,41 @@ class ImageAdapter(val imageList:ArrayList<image_item>):
                     Log.d("putExtra", intent.putExtra("photo", item.photo).toString())
 
                     v?.context?.startActivity(intent)
+                }
+            })
+
+            itemView.setOnLongClickListener(object : View.OnLongClickListener {
+
+                override fun onLongClick(view: View?): Boolean {
+                    val curPos: Int = adapterPosition
+                    var image: image_item = imageList.get(curPos)
+
+                    //다이얼로그 생성
+                    var builder = AlertDialog.Builder(view?.context)
+                    val inflater = LayoutInflater.from(view?.context)
+                    val dialogView = inflater.inflate(R.layout.custom_dialog, null)
+                    val dialogText = dialogView.findViewById<TextView>(R.id.dg_content)
+                    builder.setView(dialogView)
+                        .setPositiveButton("확인") { dialogInterface, i ->
+                            builder.setTitle(dialogText.text.toString())
+                            //json 파일 불러오기
+
+                            //Log.d("JsonList", JsonList.toString())
+                            imageList.remove(imageList.get(curPos))
+                            //Log.d("get_remove", "get_remove")
+
+                            notifyItemRemoved(curPos)
+                            Log.d("JsonList", imageList.toString())
+                            Log.d("JsonList_size", imageList.size.toString())
+                            notifyItemRangeChanged(curPos,imageList.size)
+                            Log.d("JsonList", imageList.toString())
+                            Log.d("JsonList_size", imageList.size.toString())
+                            //Toast.makeText(view?.context, "파일이 삭제되었습니다.", Toast.LENGTH_SHORT).show()
+                        }
+                        .setNegativeButton("취소") { dialogInterface, i ->
+                        }
+                        .show()
+                    return true
                 }
             })
         }
