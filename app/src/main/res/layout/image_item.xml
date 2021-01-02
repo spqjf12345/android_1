@@ -13,7 +13,7 @@
     tools:context=".Fragment2">
 
     <ImageView
-        android:id="@+id/image_holder"
+        android:id="@+id/gallery"
         android:layout_width="100dp"
         android:layout_height="100dp"
         app:layout_constraintBottom_toBottomOf="parent"

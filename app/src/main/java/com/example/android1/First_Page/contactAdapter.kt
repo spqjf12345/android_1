@@ -116,7 +116,7 @@ class contactAdapter(private val JsonList:ArrayList<list_item>):
         super.onBindViewHolder(holder, position, payloads)
     }
 
-    override fun getFilter(): Filter{
+     fun getFilter(): Filter{
         return object : Filter(){
             override fun performFiltering(constraint: CharSequence?): FilterResults {
                 val charString = constraint.toString()

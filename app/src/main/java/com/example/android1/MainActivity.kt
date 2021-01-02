@@ -4,6 +4,7 @@ package com.example.android1
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.fragment.app.FragmentManager
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
 
@@ -17,6 +18,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         //페이지어뎁터를 받아와 프래그멘트 실제 연결
         val adapter = PageAdapter(supportFragmentManager)
+
+
 
         adapter.addFragment(Fragment1(), "연락처")
         adapter.addFragment(Fragment2(), "사진")
