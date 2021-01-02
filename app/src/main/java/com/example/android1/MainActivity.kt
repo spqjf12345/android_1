@@ -20,7 +20,6 @@ class MainActivity : AppCompatActivity() {
         val adapter = PageAdapter(supportFragmentManager)
 
 
-
         adapter.addFragment(Fragment1(), "연락처")
         adapter.addFragment(Fragment2(), "사진")
         adapter.addFragment(Fragment3(), "자유")

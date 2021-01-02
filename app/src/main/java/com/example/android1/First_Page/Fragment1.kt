@@ -1,6 +1,6 @@
 package com.example.android1
 
-import android.content.Intent
+
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
@@ -23,13 +23,12 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_a.*
-import kotlinx.android.synthetic.main.list_item.*
-import java.util.Locale.filter
-import com.example.android1.contactAdapter as contactAdapter1
+import org.json.JSONObject
 
 class Fragment1 : Fragment() {
     val list = ArrayList<list_item>()
     lateinit var recyclerView1 : RecyclerView
+    // lateinit var adapter:contactAdapter
     var permissions = arrayOf(android.Manifest.permission.READ_CONTACTS, android.Manifest.permission.CALL_PHONE)
 
     var searchText = ""
@@ -48,16 +47,9 @@ class Fragment1 : Fragment() {
             }
             refreshFragment(this, parentFragmentManager)
         }
-
-
-
     }
 
-    override fun onRequestPermissionsResult(
-            requestCode: Int,
-            permissions: Array<out String>,
-            grantResults: IntArray
-    ) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         if(requestCode == 99) {
             var check = true
             for(grant in grantResults) {
@@ -75,15 +67,34 @@ class Fragment1 : Fragment() {
             }
         }
     }
-    fun changeList() {
-        val newList = getPhoneNumbers(sortText, searchText)
-        Log.d("newList", newList.toString())
-        this.list.clear()
-        this.list.addAll(newList)
-        //this.adapter.notifyDataSetChanged()
+
+    fun setSearchListener() {
+        editSearch.addTextChangedListener(object: TextWatcher {
+            override fun afterTextChanged(s: Editable?) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                searchText = s.toString()
+                changeList()
+            }
+        })
     }
 
+    fun changeList() {
+        val newList = getPhoneNumbers(sortText, searchText)
+        this.list.clear()
+        this.list.addAll(newList)
+    }
+
+
     fun getPhoneNumbers(sort:String, searchName:String?): ArrayList<list_item> {
+        //json 파일
+        val assetManager = resources.assets
+        val inputStream = assetManager.open("test_contracts")
+        val jsonString = inputStream.bufferedReader().use { it.readText() }
+        val jObject = JSONObject(jsonString)
+
+
         val list = ArrayList<list_item>()
         val phoneUri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI
         val projections = arrayOf(ContactsContract.CommonDataKinds.Phone.CONTACT_ID
@@ -99,7 +110,28 @@ class Fragment1 : Fragment() {
             val id = cursor?.getString(0).toString()
             val name = cursor?.getString(1).toString()
             var number = cursor?.getString(2).toString()
-            list.add(list_item(id, name, number))
+
+            // json 파일에 넣기
+            val main = JSONObject(jsonString)
+           jObject.put("person",main)
+           main.put("id", id)
+           main.put("name", name)
+           main.put("number", number)
+
+
+           Log.d("jObject", jObject.toString())
+
+           //넣은 값을 불러와서 list item 에 부여
+            for (i in 0 until jObject.length()) {
+                //var jArray = jObject.getJSONArray("person")
+                val obj = jObject.getJSONObject("person")
+                Log.d("obj", obj.toString())
+                val json_id = obj.getString("id")
+                val json_name = obj.getString("name")
+                val json_number = obj.getString("number")
+                list.add(list_item(json_id, json_name, json_number))
+            }
+
         }
         return list
     }
@@ -123,9 +155,9 @@ class Fragment1 : Fragment() {
             ActivityCompat.requestPermissions(this.requireActivity(), permissions, 99)
         }
 
-        contact_Filter.addTextChangedListener(object: TextWatcher {
+        /*contact_Filter.addTextChangedListener(object: TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                TODO("Not yet implemented")
+
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -133,27 +165,14 @@ class Fragment1 : Fragment() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                TODO("Not yet implemented")
+
             }
 
-        })
+        })*/
 
-            /*val assetManager = resources.assets
-            val inputStream = assetManager.open("Contacts.json")
-            val jsonString = inputStream.bufferedReader().use { it.readText() }
-            val jObject = JSONObject(jsonString)
-            var jArray = jObject.getJSONArray("person")
-            for (i in 0 until jArray.length()) {
-                val obj = jArray.getJSONObject(i)
-                val name = obj.getString("name")
-                val number = obj.getString("number")
-                Log.d("TAG", "name($i): $name")
-                Log.d("TAG", "number($i): $number")
-                list.add(list_item(name, number))
-            }*/
+
     }
 
-    //여기에 그리기
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -161,7 +180,8 @@ class Fragment1 : Fragment() {
         var rootView =  inflater.inflate(R.layout.fragment_a, container, false)
         recyclerView1 = rootView.findViewById(R.id.rv_json!!)as RecyclerView
         recyclerView1.layoutManager = LinearLayoutManager(this.context)
-        recyclerView1.adapter = contactAdapter1(list)
+        recyclerView1.adapter?.notifyDataSetChanged()
+        recyclerView1.adapter = contactAdapter(list)
         recyclerView1.setHasFixedSize(true)
         return rootView
     }
@@ -171,9 +191,11 @@ class Fragment1 : Fragment() {
         ft.detach(fragment).attach(fragment).commit()
     }
 
+
+
 }
 
-data class Phone(val id: String?, val name:String?, val phone:String?)
+
 
 
 
