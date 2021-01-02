@@ -22,6 +22,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.fragment_3.*
 import kotlinx.android.synthetic.main.fragment_a.*
 import kotlinx.android.synthetic.main.list_item.*
 import java.util.Locale.filter
@@ -122,7 +123,7 @@ class Fragment1 : Fragment() {
         } else {
             ActivityCompat.requestPermissions(this.requireActivity(), permissions, 99)
         }
-
+/*
         contact_Filter.addTextChangedListener(object: TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 TODO("Not yet implemented")
@@ -138,6 +139,8 @@ class Fragment1 : Fragment() {
 
         })
 
+
+ */
             /*val assetManager = resources.assets
             val inputStream = assetManager.open("Contacts.json")
             val jsonString = inputStream.bufferedReader().use { it.readText() }

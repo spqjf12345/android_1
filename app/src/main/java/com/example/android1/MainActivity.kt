@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
             .setPermissionListener(permission)
             .setRationaleMessage("카메라 사용을 위해 권한을 허용해주세요")
             .setDeniedMessage("권한을 거부하였습니다.")
-            .setPermissions(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.CAMERA, android.Manifest.permission.CALL_PHONE)
+            .setPermissions(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.CAMERA, android.Manifest.permission.CALL_PHONE, android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION)
             .check()
     }
 

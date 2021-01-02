@@ -56,6 +56,7 @@ class contactAdapter(private val JsonList:ArrayList<list_item>):
                             "${curPos}\n ${item.name}\n ${item.number}",
                             Toast.LENGTH_SHORT
                         ).show()
+                        askQuestionDelete()
                         return true
                     }
 
@@ -97,6 +98,10 @@ class contactAdapter(private val JsonList:ArrayList<list_item>):
             }
         }
 
+    private fun askQuestionDelete(){
+        //val inflater = getSystemService
+    }
+
     override fun getItemCount(): Int {
        return this.filterList.size
     }
@@ -113,7 +118,7 @@ class contactAdapter(private val JsonList:ArrayList<list_item>):
         super.onBindViewHolder(holder, position, payloads)
     }
 
-     fun getFilter(): Filter{
+     override fun getFilter(): Filter{
         return object : Filter(){
             override fun performFiltering(constraint: CharSequence): FilterResults {
                 val charString = constraint.toString()
