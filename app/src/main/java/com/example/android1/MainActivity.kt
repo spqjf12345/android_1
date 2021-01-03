@@ -3,8 +3,15 @@ package com.example.android1
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.fragment.app.FragmentManager
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
 
@@ -12,13 +19,11 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
-    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         //페이지어뎁터를 받아와 프래그멘트 실제 연결
         val adapter = PageAdapter(supportFragmentManager)
-
 
         adapter.addFragment(Fragment1(), "연락처")
         adapter.addFragment(Fragment2(), "사진")
@@ -27,11 +32,10 @@ class MainActivity : AppCompatActivity() {
         tabLayout.setupWithViewPager(viewPager)
         //권한 허용
         getPermission()
-
     }
 
     private fun getPermission() {
-        var permission = object: PermissionListener {
+        var permission: PermissionListener = object: PermissionListener {
             override fun onPermissionGranted() {
                 Toast.makeText(this@MainActivity,"권한이 허용되었습니다", Toast.LENGTH_SHORT).show()
             }
@@ -48,11 +52,6 @@ class MainActivity : AppCompatActivity() {
             .setPermissions(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.CAMERA, android.Manifest.permission.CALL_PHONE, android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION)
             .check()
     }
-
-
-
-
-
 
 
 }
