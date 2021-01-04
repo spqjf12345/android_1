@@ -32,7 +32,7 @@ class Fragment1 : Fragment() {
     var searchText = ""
     var sortText = ""
 
-    private var filterAdapter: FilterAdapter? = null
+    private var filterAdapter: com.example.android1.First_Page.FilterAdapter? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
@@ -181,7 +181,7 @@ class Fragment1 : Fragment() {
         recyclerView1.adapter?.notifyDataSetChanged()
 
         filterAdapter = FilterAdapter(list)
-        recyclerView1.adapter = contactAdapter(list)
+        //recyclerView1.adapter = contactAdapter(list)
         recyclerView1.adapter = FilterAdapter(list)
 
         recyclerView1.setHasFixedSize(true)

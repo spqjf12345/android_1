@@ -14,19 +14,12 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.Marker
 import kotlinx.android.synthetic.main.fragment_3.*
-import noman.googleplaces.*
 
 
 class Fragment3 : Fragment() {
 
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var mMap: GoogleMap
-    var previous_marker: List<Marker>? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
-        initLocation()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -43,25 +36,4 @@ class Fragment3 : Fragment() {
         return rootView
     }
 
-    @SuppressLint("MissingPermission")
-    private fun initLocation(){
-
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-            && ActivityCompat.checkSelfPermission(
-                requireContext(),
-                android.Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED) {
-            return
-        }
-
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
-        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-            if(location != null){
-
-            }
-        }
-    }
 }
