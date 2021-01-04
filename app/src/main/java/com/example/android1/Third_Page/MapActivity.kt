@@ -38,7 +38,6 @@ import kotlin.collections.HashSet
 
 
 class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, ActivityCompat.OnRequestPermissionsResultCallback {
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
     var previous_marker: ArrayList<Marker>? = null
 
     private var mMap: GoogleMap? = null
@@ -78,7 +77,7 @@ class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, Acti
     var mCurrentLocatiion: Location? = null
     var currentPosition: LatLng? = null
 
-    private val mFusedLocationClient: FusedLocationProviderClient? = null
+    private var mFusedLocationClient: FusedLocationProviderClient? = null
     private var locationRequest: LocationRequest? = null
     private var location: Location? = null
 
@@ -108,7 +107,7 @@ class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, Acti
             .setInterval(UPDATE_INTERVAL_MS.toLong())
             .setFastestInterval(FASTEST_UPDATE_INTERVAL_MS.toLong()))
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(applicationContext)
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(applicationContext)
 
         val mapFragment: SupportMapFragment? = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment?
@@ -223,7 +222,7 @@ class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, Acti
         super.onStop()
         if(mFusedLocationClient != null){
             Log.d(TAG, "onStop : call stopLocationUpdates")
-            mFusedLocationClient.removeLocationUpdates(locationCallback)
+            mFusedLocationClient!!.removeLocationUpdates(locationCallback)
         }
     }
 
@@ -404,7 +403,7 @@ class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, Acti
             return
         }
 
-        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+        mFusedLocationClient!!.lastLocation.addOnSuccessListener { location ->
             if(location != null){
                 val MyLocationMarker = MarkerOptions()
                 MyLocation = LatLng(location.latitude, location.longitude)
@@ -419,7 +418,7 @@ class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, Acti
     }
 
     override fun onPlacesFailure(e: PlacesException?) {
-        TODO("Not yet implemented")
+
     }
     fun showPlaceInformation(location:LatLng){
         mMap?.clear()
