@@ -1,6 +1,7 @@
 package com.example.android1
 
 
+import android.app.AlertDialog
 import android.app.Dialog
 import android.content.pm.PackageManager
 import android.os.Build
@@ -13,6 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -28,7 +30,7 @@ import org.json.JSONObject
 
 class Fragment1 : Fragment() {
     val list = ArrayList<list_item>()
-    lateinit var adapter:contactAdapter
+    //lateinit var adapter:contactAdapter
 
     lateinit var recyclerView1: RecyclerView
     var permissions = arrayOf(android.Manifest.permission.READ_CONTACTS, android.Manifest.permission.CALL_PHONE)
@@ -39,6 +41,7 @@ class Fragment1 : Fragment() {
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
 
         /* add Button */
        /* addButton.setOnClickListener {
@@ -52,66 +55,92 @@ class Fragment1 : Fragment() {
         }*/
 
         btn_add.setOnClickListener {
-            Log.d("create_add_dialog", "create_add_dialog")
-            //다이얼로그 생성
-            var dilaog01 = Dialog(view?.context);
+
+            /* custom_add_dialog */
+           var dilaog01 = Dialog(view?.context);
             dilaog01.requestWindowFeature(Window.FEATURE_NO_TITLE)
             val inflater = LayoutInflater.from(view?.context)
             val dialogView = inflater.inflate(R.layout.cutom_add_dialog, null)
             dilaog01.setContentView(dialogView)
-
+            dilaog01.show()
+            val ADD_Button: Button = dialogView.findViewById(R.id.addButton_)
+            var CANCEL_Button : Button = dialogView.findViewById(R.id.cancelButton_)
 
             /*cancel button*/
-            cancelButton_.setOnClickListener {(object : View.OnClickListener {
-                override fun onClick(view: View?) {
-                    dilaog01.dismiss()
-                }
-            }
-                )}
 
-            addButton_.setOnClickListener {
-                (object : View.OnClickListener {
-                    override fun onClick(view: View?){
+            CANCEL_Button.setOnClickListener {
+                //(object : View.OnClickListener {
+                //    override fun onClick(view: View?) {
+                        dilaog01.dismiss()
+                    //}
+               // }
+                        //)
+            }
+
+            ADD_Button.setOnClickListener {
+
+                //(object : view.OnClickListener {
+                    //override fun onClick(view: View?) {
+                        Log.d("add_click1", "add_click1")
                         val id: String = ""
-                        val dialogName = dialogView.findViewById<TextView>(R.id.addName_)
-                        val dialogNumber = dialogView.findViewById<TextView>(R.id.addNumber_)
-                        if (dialogName.text.isNotEmpty() && dialogNumber.text.isNotEmpty()) {
-                            list.add(list_item(id, dialogName.text.toString(), dialogNumber.text.toString()))
-                        }
-                        refreshFragment(this@Fragment1,parentFragmentManager)
-                        getActivity()?.finish()
+                        val dialogName = dialogView?.findViewById<TextView>(R.id.addName_)?.text.toString()
+                        val dialogNumber = dialogView?.findViewById<TextView>(R.id.addNumber_)?.text.toString()
+                        Log.d("dialogName", dialogName)
+                        Log.d("dialogNumber", dialogNumber)
+                       // if (dialogName.isNotEmpty() && dialogNumber.isNotEmpty()) {
+                            list.add(list_item(id, dialogName, dialogNumber))
+                            for(i in list) {
+                                Log.d("dialogName_dialogNumber", i.name + i.number)
+                            }
+                            dilaog01.dismiss()
+                            contactAdapter(list).notifyItemInserted(0);
+                            //refreshFragment(this, parentFragmentManager)
+
+                            Log.d("get_load_add", "get_load_add_button")
+                        //}
+
+                        Log.d("get_load_add", "get_load_add_button")
+
+                        //dilaog01.dismiss()
+
                     }
 
-                    })
-                dilaog01.show()
-            }
 
+
+
+                //})
+
+
+            //}
 
 
             /*alterdialog*/
-            //var add_builder = AlertDialog.Builder(view?.context)
-
-            /*add_builder.setView(dialogView)
-                /*.addButton_.setOnClickListener {
-                        list.add(list_item(id, dialogName.text.toString(), dialogNumber.text.toString()
-                            )
-                        )
-                }*/
-
+            /*var add_builder = AlertDialog.Builder(view?.context)
+            //val inflater = LayoutInflater.from(view?.context)
+            //val dialogView = inflater.inflate(R.layout.cutom_add_dialog, null)
+            add_builder.setView(dialogView)
                 .setPositiveButton("ADD") { dialogInterface, i ->
-                    add_builder.setTitle(dialogText.text.toString())
+//                    add_builder.setTitle(dialogText.text.toString())
+                    val id: String = ""
+                    val dialogName = dialogView?.findViewById<TextView>(R.id.addName_)?.text.toString()
+                    val dialogNumber = dialogView?.findViewById<TextView>(R.id.addNumber_)?.text.toString()
+                    list.add(list_item(id, dialogName, dialogNumber))
+                    //refreshFragment(this, parentFragmentManager)
+                    contactAdapter(list).notifyItemInserted(0);
 
-                    list.add(list_item(id, dialogName.text.toString(), dialogNumber.text.toString()))
-                    refreshFragment(this,parentFragmentManager)
-                    //notifyItemRemoved(curPos)
-                    //notifyItemRangeChanged(curPos,list.size)
                 }
                 .setNegativeButton("CANCEL") { dialogInterface, i ->
                 }
                 .show()
-            */
+
+             */
+
+
 
         }
+
+
+
 
         contact_Filter.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {}
@@ -160,7 +189,6 @@ class Fragment1 : Fragment() {
     fun setList() {
         //list.addAll(getPhoneNumbers(sortText, searchText))
         recyclerView1.adapter?.notifyDataSetChanged()
-
         //val set_inflater = LayoutInflater.from(context)
         //val set_View = set_inflater.inflate(R.layout.fragment_a, null)
 
@@ -298,6 +326,7 @@ class Fragment1 : Fragment() {
     fun refreshFragment(fragment: Fragment, fragmentManager: FragmentManager){
         var ft: FragmentTransaction = fragmentManager.beginTransaction()
         ft.detach(fragment).attach(fragment).commit()
+        Log.v("dialog", "Do refresh")
     }
 
 

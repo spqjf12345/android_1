@@ -64,7 +64,6 @@ class contactAdapter(val JsonList:ArrayList<list_item>): RecyclerView.Adapter<co
                 var item: list_item = JsonList.get(curPos)
                 val intent_call = Intent(Intent.ACTION_CALL, Uri.parse("tel:" + item.number))
                 startActivity(inflatedView.context, intent_call, Bundle())
-                //startActivity(intent_call)
             }
 
             /* message */
@@ -75,7 +74,7 @@ class contactAdapter(val JsonList:ArrayList<list_item>): RecyclerView.Adapter<co
                 startActivity(inflatedView.context, intent_mms, Bundle())
             }
 
-            /*delete*/
+            /* delete */
             itemView.setOnLongClickListener(object : View.OnLongClickListener {
                 override fun onLongClick(view: View?): Boolean {
                     Log.d("delete", "delete")
@@ -117,23 +116,19 @@ class contactAdapter(val JsonList:ArrayList<list_item>): RecyclerView.Adapter<co
         return this.JsonList.size
     }
 
-    override fun onBindViewHolder(
-        holder: contactAdapter.ViewHolder,
-        position: Int
-    ) {
+    override fun onBindViewHolder(holder: contactAdapter.ViewHolder, position: Int) {
         holder.name.setText((JsonList[position].name))
         holder.number.text = (JsonList[position].number)
     }
 
 
-
+        /* for search */
         override fun getFilter(): Filter {
             return object : Filter() {
                 override fun performFiltering(constraint: CharSequence): FilterResults {
 
                     val charString = constraint.toString()
                     //filteredList.clear()
-                    Log.d("Filter", "change the list elements")
                     filteredList = if (charString.isEmpty()) {
                         unfilterList
                     } else {
