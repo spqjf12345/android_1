@@ -9,13 +9,11 @@
 
     <ImageView
         android:id="@+id/iv_detail"
-        android:layout_width="301dp"
-        android:layout_height="310dp"
+        android:layout_width="294dp"
+        android:layout_height="529dp"
         android:layout_marginStart="64dp"
-        android:layout_marginLeft="64dp"
-        android:layout_marginTop="64dp"
         android:layout_marginEnd="46dp"
-        android:layout_marginRight="46dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
