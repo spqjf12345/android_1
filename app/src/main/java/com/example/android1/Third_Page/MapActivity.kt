@@ -22,6 +22,7 @@ import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.android1.Third_Page.RestaurantMarker
 import com.google.android.gms.location.*
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.maps.*
@@ -32,14 +33,15 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.googlemaplayer.*
 import noman.googleplaces.*
+import org.json.JSONObject
 import java.io.IOException
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 
 
-class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, ActivityCompat.OnRequestPermissionsResultCallback {
-    var previous_marker: ArrayList<Marker>? = null
-
+class MapActivity: AppCompatActivity(), OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback {
+    val restaurantMarker = ArrayList<RestaurantMarker>()
     private var mMap: GoogleMap? = null
     private var currentMarker: Marker? = null
     var locationCallback : LocationCallback = object : LocationCallback() {
@@ -114,10 +116,19 @@ class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, Acti
         mapFragment?.getMapAsync(this)
         Log.d("Maps", "getMapAsync")
 
-        /* Place API */
-        //var button = findViewById(R.id.fd_restaurant);
-        fd_restaurant?.setOnClickListener {
-            showPlaceInformation(MyLocation);
+        val assetManager = resources.assets
+        val inputStream = assetManager.open("Restaurant.json")
+        val jsonString = inputStream.bufferedReader().use{it.readText()}
+        val jObject = JSONObject(jsonString)
+        val jArray = jObject.getJSONArray("Restaurant")
+
+        for (i in 0 until jArray.length()){
+            val obj = jArray.getJSONObject(i)
+            val name = obj.getString("name")
+            val menu = obj.getString("menu")
+            val latitude = obj.getDouble("latitude")
+            val longitude = obj.getDouble("longitude")
+            restaurantMarker.add(RestaurantMarker(name, menu, latitude, longitude))
         }
     }
 
@@ -415,62 +426,19 @@ class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, Acti
                 mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(MyLocation, 10F))
             }
         }
-    }
-
-    override fun onPlacesFailure(e: PlacesException?) {
-
-    }
-    fun showPlaceInformation(location:LatLng){
-        mMap?.clear()
-        if (previous_marker != null)
-            previous_marker!!.clear() //지역정보 마커 클리어
-
-
-        NRPlaces.Builder()
-                .listener(this@MapActivity)
-                .key("AIzaSyCPwsBG05QWc33R5bQH3FOxFwsJOu-JO9g")
-                .latlng(location.latitude, location.longitude) //현재 위치
-                .radius(500) //500 미터 내에서 검색
-                .type(PlaceType.RESTAURANT) //음식점
-                .build()
-                .execute()
-    }
-
-    override fun onPlacesSuccess(places: List<Place>?) {
-        runOnUiThread(Runnable() {
-           fun run() {
-               for (place in places!!) {
-                   var latLng = LatLng(place.getLatitude(), place.getLongitude())
-                  var markerSnippet: String = getCurrentAddress(latLng)
-                   val markerOptions = MarkerOptions()
-                   markerOptions.position(latLng) // <- 초기화 작업 필요
-                   markerOptions.title(place.getName())
-                   markerOptions.snippet(markerSnippet)
-                   var item:Marker = mMap!!.addMarker(markerOptions)
-                   previous_marker?.add(item)
-
-               }
-
-               //중복 마커 제거
-               val hashSet = HashSet<Marker>()
-               //HashSet<Marker> hashSet = new HashSet<Marker>();
-               previous_marker?.let {
-                   hashSet.addAll(it)
-               }
-               //hashSet.addAll(previous_marker);
-               previous_marker?.clear();
-               previous_marker?.addAll(hashSet);
-
-           }
-
-           })
-        
-    }
-
-    override fun onPlacesFinished() {
-    }
-
-    override fun onPlacesStart() {
+        for (item:RestaurantMarker in restaurantMarker){
+            val restaurantmarker = MarkerOptions()
+            restaurantmarker.position(LatLng(item.latitude, item.longitude))
+            restaurantmarker.title(item.name)
+            restaurantmarker.snippet(item.menu)
+            mMap?.addMarker(restaurantmarker)
+        }
+        val SEOUL: LatLng = LatLng(37.56, 126.97)
+        val markerOptions = MarkerOptions()
+        markerOptions.position(SEOUL)
+        markerOptions.title("서울")
+        markerOptions.snippet("한국의 수도")
+        mMap!!.addMarker(markerOptions)
     }
 }
 
