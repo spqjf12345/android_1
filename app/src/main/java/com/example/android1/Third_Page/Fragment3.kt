@@ -32,7 +32,7 @@ class Fragment3 : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView = inflater.inflate(com.example.android1.R.layout.fragment_3, container, false)
+        val rootView = inflater.inflate(R.layout.fragment_3, container, false)
         return rootView
     }
 

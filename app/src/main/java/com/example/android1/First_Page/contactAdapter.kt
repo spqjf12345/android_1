@@ -138,9 +138,6 @@ class contactAdapter(val JsonList:ArrayList<list_item>): RecyclerView.Adapter<co
                         for (item in unfilterList) {
                             if (item.name.toLowerCase().contains(filterPattern)){
                                 FilteringList.add(item)
-                                for(i in FilteringList){
-                                    Log.d("FilterlingList", i.name + i.number)
-                                }
                             }
                         }
                         FilteringList
