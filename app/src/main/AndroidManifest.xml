@@ -37,7 +37,7 @@
             </intent-filter>
 
         </activity>
-        <activity android:name=".MapActivity">
+        <activity android:name=".Third_Page.MapActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
