@@ -1,8 +1,12 @@
 package com.example.android1
 
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
+import android.os.Parcel
+import android.os.Parcelable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +15,7 @@ import android.widget.Filter
 import android.widget.Filterable
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -21,21 +26,20 @@ import java.io.InputStream
 import java.nio.channels.AsynchronousFileChannel.open
 import java.nio.channels.Pipe.open
 import java.util.*
+class contactAdapter(val JsonList:ArrayList<list_item>): RecyclerView.Adapter<contactAdapter.ViewHolder>(), Filterable{
 
 
-class contactAdapter(val JsonList:ArrayList<list_item>): RecyclerView.Adapter<contactAdapter.ViewHolder>() /*,Filterable*/ {
+    private var filteredList: ArrayList<list_item> = JsonList
+    private var unfilterList: ArrayList<list_item> = JsonList
 
-    private var filterList: ArrayList<list_item> = JsonList
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var name = itemView.findViewById<TextView>(R.id.tv_name)
         var number = itemView.findViewById<TextView>(R.id.tv_number)
     }
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): contactAdapter.ViewHolder {
-        val inflatedView =
-            LayoutInflater.from(parent.context).inflate(R.layout.list_item, parent, false)
+        val inflatedView = LayoutInflater.from(parent.context).inflate(R.layout.list_item, parent, false)
         return contactAdapter.ViewHolder(inflatedView).apply {
 
             /*Toast message*/
@@ -52,14 +56,15 @@ class contactAdapter(val JsonList:ArrayList<list_item>): RecyclerView.Adapter<co
                         return true
                     }
 
-                })
-*/
+                })*/
+
             /* call */
             itemView.iv_call.setOnClickListener {
                 val curPos: Int = adapterPosition
                 var item: list_item = JsonList.get(curPos)
                 val intent_call = Intent(Intent.ACTION_CALL, Uri.parse("tel:" + item.number))
-                parent.context.startActivity(intent_call)
+                startActivity(inflatedView.context, intent_call, Bundle())
+                //startActivity(intent_call)
             }
 
             /* message */
@@ -67,12 +72,13 @@ class contactAdapter(val JsonList:ArrayList<list_item>): RecyclerView.Adapter<co
                 val curPos: Int = adapterPosition
                 var item: list_item = JsonList.get(curPos)
                 val intent_mms = Intent(Intent.ACTION_VIEW, Uri.parse("tel:" + item.number))
-                parent.context.startActivity(intent_mms)
+                startActivity(inflatedView.context, intent_mms, Bundle())
             }
 
             /*delete*/
             itemView.setOnLongClickListener(object : View.OnLongClickListener {
                 override fun onLongClick(view: View?): Boolean {
+                    Log.d("delete", "delete")
                     val curPos: Int = adapterPosition
                     //var item: list_item = JsonList.get(curPos)
                     //다이얼로그 생성
@@ -81,73 +87,98 @@ class contactAdapter(val JsonList:ArrayList<list_item>): RecyclerView.Adapter<co
                     val dialogView = inflater.inflate(R.layout.custom_dialog, null)
                     val dialogText = dialogView.findViewById<TextView>(R.id.dg_content)
                     builder.setView(dialogView)
-                        .setPositiveButton("확인") { dialogInterface, i ->
+                        .setPositiveButton("OK") { dialogInterface, i ->
                             builder.setTitle(dialogText.text.toString())
+
                             //remove
                             JsonList.remove(JsonList.get(curPos))
-
                             notifyItemRemoved(curPos)
+
                             Log.d("JsonList", JsonList.toString())
                             Log.d("JsonList_size", JsonList.size.toString())
-                            notifyItemRangeChanged(curPos,JsonList.size)
+                            notifyItemRangeChanged(curPos, JsonList.size)
                             Log.d("JsonList", JsonList.toString())
                             Log.d("JsonList_size", JsonList.size.toString())
                             //Toast.makeText(view?.context, "파일이 삭제되었습니다.", Toast.LENGTH_SHORT).show()
+
                         }
-                        .setNegativeButton("취소") { dialogInterface, i ->
+                        .setNegativeButton("CANCEL") { dialogInterface, i ->
                         }
                         .show()
                     return true
                 }
             })
 
-            /*add*/
-            itemView.btn_add.setOnClickListener (object : View.OnClickListener {
-                override fun onClick(view: View?) {
-                    Log.d("111111", "clicked")
-                    val curPos: Int = adapterPosition
-                    //var item: list_item = JsonList.get(curPos)
-                    //다이얼로그 생성
-                    var add_builder = AlertDialog.Builder(view?.context)
-                    val inflater = LayoutInflater.from(view?.context)
-                    val dialogView = inflater.inflate(R.layout.cutom_add_dialog, null)
-                    Log.d("dia", dialogView.toString())
-                    val dialogText = dialogView.findViewById<TextView>(R.id.dg_title)
-                    val id: String = ""
-                    val dialogName = dialogView.findViewById<TextView>(R.id.addName_)
-                    val dialogNumber = dialogView.findViewById<TextView>(R.id.addNumber_)
-
-                    add_builder.setView(dialogView)
-                        .setPositiveButton("확인") { dialogInterface, i ->
-                            add_builder.setTitle(dialogText.text.toString())
-                            JsonList.add(list_item(id, dialogName.toString(), dialogNumber.toString()))
-                            notifyItemRemoved(curPos)
-                            notifyItemRangeChanged(curPos,JsonList.size)
-                        }
-                        .setNegativeButton("취소") { dialogInterface, i ->
-                        }
-                        .show()
-
-                }
-            })
-
-
         }
-            }
-
-
-            /*edit*/
+    }
 
 
     override fun getItemCount(): Int {
         return this.JsonList.size
     }
 
-    override fun onBindViewHolder(holder: contactAdapter.ViewHolder, position: Int) { //class ViewHolder을 연결
+    override fun onBindViewHolder(
+        holder: contactAdapter.ViewHolder,
+        position: Int
+    ) {
         holder.name.setText((JsonList[position].name))
         holder.number.text = (JsonList[position].number)
     }
 
-}
+
+
+        override fun getFilter(): Filter {
+            return object : Filter() {
+                override fun performFiltering(constraint: CharSequence): FilterResults {
+
+                    val charString = constraint.toString()
+                    //filteredList.clear()
+                    Log.d("Filter", "change the list elements")
+                    filteredList = if (charString.isEmpty()) {
+                        unfilterList
+                    } else {
+                        var FilteringList = ArrayList<list_item>()
+                        val filterPattern = charString.toLowerCase()
+
+                        for (item in unfilterList) {
+                            if (item.name.toLowerCase().contains(filterPattern)){
+                                FilteringList.add(item)
+                                for(i in FilteringList){
+                                    Log.d("FilterlingList", i.name + i.number)
+                                }
+                            }
+                        }
+                        FilteringList
+                    }
+
+
+                    val filterResults = FilterResults()
+                    filterResults.values = filteredList
+                    Log.d("filterResult", filterResults.values.toString())
+
+                    return filterResults
+                }
+
+                override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                    Log.d("Filter", "change the list elements?")
+                    Log.d("Filter", filteredList.toString())
+                    //filteredList = results?.values as ArrayList<list_item>
+                    notifyDataSetChanged()
+                    Log.d("Filter", filteredList.toString())
+                    //filteredList.clear()
+
+                }
+
+
+            }
+        }
+    }
+
+
+
+
+
+
+
 
 

@@ -84,7 +84,6 @@ class Fragment2 : Fragment() {
     }
 
     private fun takePicture() {
-        //카메라 앱 실행
         var capture = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         startActivityForResult(capture, capturePhoto)
     }

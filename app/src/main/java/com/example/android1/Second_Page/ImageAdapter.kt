@@ -47,12 +47,8 @@ class ImageAdapter(val imageList:ArrayList<image_item>):
                     builder.setView(dialogView)
                         .setPositiveButton("확인") { dialogInterface, i ->
                             builder.setTitle(dialogText.text.toString())
-                            //json 파일 불러오기
 
-                            //Log.d("JsonList", JsonList.toString())
                             imageList.remove(imageList.get(curPos))
-                            //Log.d("get_remove", "get_remove")
-
                             notifyItemRemoved(curPos)
                             Log.d("JsonList", imageList.toString())
                             Log.d("JsonList_size", imageList.size.toString())
@@ -68,16 +64,11 @@ class ImageAdapter(val imageList:ArrayList<image_item>):
                 }
             })
         }
-
-
     }
-
-
 
 
     override fun onBindViewHolder(holder: viewHolder, position: Int) {
             holder.image?.setImageURI(imageList.get(position).photo)
-
     }
 
     override fun getItemCount(): Int {
