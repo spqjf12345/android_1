@@ -4,21 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="16dp"
+    android:paddingLeft="16dp"
     tools:context=".Fragment1">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_json"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginTop="100dp"
         android:layout_marginBottom="150dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        tools:listitem="@layout/list_item"/>
 
     <Button
         android:id="@+id/addButton"
@@ -47,12 +48,12 @@
 
     <EditText
         android:id="@+id/addName"
-        android:layout_width="175dp"
-        android:layout_height="42dp"
-        android:layout_marginStart="17dp"
-        android:layout_marginLeft="17dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_width="161dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
         android:layout_marginBottom="13dp"
         android:ems="10"
         android:hint="이름 :"
@@ -63,12 +64,12 @@
 
     <EditText
         android:id="@+id/addNumber"
-        android:layout_width="170dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginEnd="21dp"
-        android:layout_marginRight="21dp"
+        android:layout_width="159dp"
+        android:layout_height="43dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
         android:layout_marginBottom="16dp"
         android:ems="10"
         android:hint="전화번호 :"
@@ -80,12 +81,16 @@
     <EditText
         android:id="@+id/contact_Filter"
         android:layout_width="382dp"
-        android:layout_height="41dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/search_bg"
+        android:drawableStart="@drawable/ic_baseline_search_24"
+        android:drawableLeft="@drawable/ic_baseline_search_24"
         android:ems="10"
         android:hint="검색 :"
         android:inputType="textPersonName"
+        android:padding="16dp"
         app:layout_constraintBottom_toTopOf="@+id/rv_json"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -94,13 +99,15 @@
 
     <ImageView
         android:id="@+id/btn_add"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_width="29dp"
+        android:layout_height="21dp"
+        android:layout_marginTop="5dp"
         android:layout_marginEnd="60dp"
         android:layout_marginRight="60dp"
+        android:layout_marginBottom="5dp"
         android:background="#FFFFFF"
         android:src="@android:drawable/ic_input_add"
+        app:layout_constraintBottom_toTopOf="@+id/rv_json"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/contact_Filter" />
 

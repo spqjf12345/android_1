@@ -1,6 +1,7 @@
 package com.example.android1
 
 
+import android.app.Dialog
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -11,33 +12,36 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.android1.First_Page.FilterAdapter
+import kotlinx.android.synthetic.main.cutom_add_dialog.*
 import kotlinx.android.synthetic.main.fragment_a.*
 import org.json.JSONObject
 
 class Fragment1 : Fragment() {
     val list = ArrayList<list_item>()
-    lateinit var recyclerView1 : RecyclerView
+    lateinit var adapter:contactAdapter
+
+    lateinit var recyclerView1: RecyclerView
     var permissions = arrayOf(android.Manifest.permission.READ_CONTACTS, android.Manifest.permission.CALL_PHONE)
 
     var searchText = ""
     var sortText = ""
+    var serach:CharSequence = ""
 
-    private var filterAdapter: FilterAdapter? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         /* add Button */
-        addButton.setOnClickListener {
+       /* addButton.setOnClickListener {
             val id: String = ""
             val name = addName.text.toString()
             val number = addNumber.text.toString()
@@ -45,7 +49,86 @@ class Fragment1 : Fragment() {
                 list.add(list_item(id, name, number))
             }
             refreshFragment(this, parentFragmentManager)
+        }*/
+
+        btn_add.setOnClickListener {
+            Log.d("create_add_dialog", "create_add_dialog")
+            //다이얼로그 생성
+            var dilaog01 = Dialog(view?.context);
+            dilaog01.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            val inflater = LayoutInflater.from(view?.context)
+            val dialogView = inflater.inflate(R.layout.cutom_add_dialog, null)
+            dilaog01.setContentView(dialogView)
+
+
+            /*cancel button*/
+            cancelButton_.setOnClickListener {(object : View.OnClickListener {
+                override fun onClick(view: View?) {
+                    dilaog01.dismiss()
+                }
+            }
+                )}
+
+            addButton_.setOnClickListener {
+                (object : View.OnClickListener {
+                    override fun onClick(view: View?){
+                        val id: String = ""
+                        val dialogName = dialogView.findViewById<TextView>(R.id.addName_)
+                        val dialogNumber = dialogView.findViewById<TextView>(R.id.addNumber_)
+                        if (dialogName.text.isNotEmpty() && dialogNumber.text.isNotEmpty()) {
+                            list.add(list_item(id, dialogName.text.toString(), dialogNumber.text.toString()))
+                        }
+                        refreshFragment(this@Fragment1,parentFragmentManager)
+                        getActivity()?.finish()
+                    }
+
+                    })
+                dilaog01.show()
+            }
+
+
+
+            /*alterdialog*/
+            //var add_builder = AlertDialog.Builder(view?.context)
+
+            /*add_builder.setView(dialogView)
+                /*.addButton_.setOnClickListener {
+                        list.add(list_item(id, dialogName.text.toString(), dialogNumber.text.toString()
+                            )
+                        )
+                }*/
+
+                .setPositiveButton("ADD") { dialogInterface, i ->
+                    add_builder.setTitle(dialogText.text.toString())
+
+                    list.add(list_item(id, dialogName.text.toString(), dialogNumber.text.toString()))
+                    refreshFragment(this,parentFragmentManager)
+                    //notifyItemRemoved(curPos)
+                    //notifyItemRangeChanged(curPos,list.size)
+                }
+                .setNegativeButton("CANCEL") { dialogInterface, i ->
+                }
+                .show()
+            */
+
         }
+
+        contact_Filter.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable) {}
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                //val ctAdapter = contactAdapter(list)
+                contactAdapter(list).getFilter().filter(s)
+                serach = s
+                Log.d("serach", serach.toString())
+                searchText = s.toString()
+                Log.d("searchText", searchText)
+                changeList()
+
+            }
+
+        })
 
     }
 
@@ -68,31 +151,55 @@ class Fragment1 : Fragment() {
             }
         }
     }
+
     fun startProcess() {
         setList()
-        setSearchListener()
-    }
-    fun setList() {
-        list.addAll(getPhoneNumbers(sortText, searchText))
-    }
-    fun setSearchListener() {
-        contact_Filter.addTextChangedListener(object: TextWatcher {
-            override fun afterTextChanged(s: Editable?) {}
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                Log.d("searchText",searchText)
-                searchText = s.toString()
-                Log.d("searchText",searchText)
-                changeList()
-            }
-        })
+        //setSearchListener()
     }
 
+    fun setList() {
+        //list.addAll(getPhoneNumbers(sortText, searchText))
+        recyclerView1.adapter?.notifyDataSetChanged()
+
+        //val set_inflater = LayoutInflater.from(context)
+        //val set_View = set_inflater.inflate(R.layout.fragment_a, null)
+
+        //recyclerView1 = set_View.findViewById(R.id.rv_json!!)as RecyclerView
+        //recyclerView1.layoutManager = LinearLayoutManager(this.context)
+        //adapter = contactAdapter(list)
+        //recyclerView1.adapter = adapter
+
+    }
 
     fun changeList() {
         val newList = getPhoneNumbers(sortText, searchText)
-        this.list.clear()
-        this.list.addAll(newList)
+        for (item in newList){
+            Log.d("List", item.name)
+            Log.d("List", item.number)
+        }
+
+        list.clear()
+        for (item in list){
+            Log.d("getItem1", item.name)
+            Log.d("getItem1", item.number)
+        }
+        list.addAll(newList)
+
+        //recyclerView1.adapter = adapter
+        rv_json.adapter?.notifyDataSetChanged()
+        rv_json.setHasFixedSize(true)
+
+        //recyclerView1 = rootView.findViewById(R.id.rv_json!!)as RecyclerView
+        //rv_json.layottManager = LinearLayoutManager(this.context)
+        //recyclerView1.adapter?.notifyDataSetChanged()
+
+        //adapter 연결
+        //recyclerView1.adapter = contactAdapter(list)
+        //recyclerView1.adapter = FilterAdapter(list)
+
+        //rv_json.adapter = adapter
+        //rv_json.layoutManager = LinearLayoutManager(this.context)
+
     }
 
     fun getPhoneNumbers(sort:String, searchName:String): ArrayList<list_item> {
@@ -110,31 +217,34 @@ class Fragment1 : Fragment() {
         val resolver = activity?.contentResolver
         var wheneClause:String? = null
 
-        val optionSort = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + sort
+        val optionSort = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME
         var whereValues = arrayOf<String>()
         //var whereValues: Array<String>
         Log.d("searchName", searchName)
         if(searchName.isNotEmpty() ?: false) {
-            wheneClause = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + "like ?"
-            whereValues = arrayOf(searchName)
+            wheneClause = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " like ?"
+            whereValues = arrayOf("%$searchName%")
 
             Log.d("searchName", searchName)
             Log.d("wheneClause", wheneClause.toString())
+
+
             Log.d("whereValues", whereValues.toString())
         }
 
-        val cursor = resolver?.query(phoneUri, projections, null, null, null)
+        val cursor = resolver?.query(phoneUri, projections, wheneClause, whereValues, null)
 
        while(cursor?.moveToNext()?:false) {
             val id = cursor?.getString(0).toString()
-            val searchName = cursor?.getString(1).toString()
+            val name = cursor?.getString(1).toString()
             var number = cursor?.getString(2).toString()
-
+           Log.d("name", name)
+           Log.d("number", number)
             // json 파일에 넣기
             val main = JSONObject(jsonString)
            jObject.put("person",main)
            main.put("id", id)
-           main.put("name", searchName)
+           main.put("name", name)
            main.put("number", number)
 
            //넣은 값을 불러와서 list item 에 부여
@@ -163,28 +273,25 @@ class Fragment1 : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View? {
+        var rootView =  inflater.inflate(R.layout.fragment_a, container, false)
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || isPermitted()) {
+            recyclerView1 = rootView.findViewById(R.id.rv_json!!)as RecyclerView
+            recyclerView1.layoutManager = LinearLayoutManager(this.context)
             list.addAll(getPhoneNumbers(sortText, searchText))
-            changeList()
+            //adapter 연결
+            recyclerView1.adapter = contactAdapter(list)
+            //recyclerView1.adapter = FilterAdapter(list)
+            recyclerView1.setHasFixedSize(true)
+            startProcess()
         } else {
             ActivityCompat.requestPermissions(this.requireActivity(), permissions, 99)
         }
-    }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        var rootView =  inflater.inflate(R.layout.fragment_a, container, false)
-        recyclerView1 = rootView.findViewById(R.id.rv_json!!)as RecyclerView
-        recyclerView1.layoutManager = LinearLayoutManager(this.context)
-        recyclerView1.adapter?.notifyDataSetChanged()
-
-        filterAdapter = FilterAdapter(list)
-        recyclerView1.adapter = contactAdapter(list)
-        recyclerView1.adapter = FilterAdapter(list)
-
-        recyclerView1.setHasFixedSize(true)
+        //startProcess()
         return rootView
     }
 

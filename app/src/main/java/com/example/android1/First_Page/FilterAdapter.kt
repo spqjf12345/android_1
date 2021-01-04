@@ -13,8 +13,8 @@ import com.example.android1.list_item
 import java.util.*
 
 class FilterAdapter (var Filter_List: ArrayList<list_item>): RecyclerView.Adapter<FilterAdapter.ViewHolder>(), Filterable{
-    private var filteredList: ArrayList<list_item> = Filter_List
-    private var unfilterList: ArrayList<list_item> = Filter_List
+    private lateinit var filteredList: ArrayList<list_item>
+    private lateinit var unfilterList: ArrayList<list_item>
 
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -65,7 +65,6 @@ class FilterAdapter (var Filter_List: ArrayList<list_item>): RecyclerView.Adapte
             }
 
             override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-                Log.d("Filter", "change the list elements?")
                 filteredList = results?.values as ArrayList<list_item>
                 notifyDataSetChanged()
             }
