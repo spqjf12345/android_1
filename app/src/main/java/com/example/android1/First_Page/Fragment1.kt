@@ -1,7 +1,6 @@
 package com.example.android1
 
 
-import android.app.AlertDialog
 import android.app.Dialog
 import android.content.pm.PackageManager
 import android.os.Build
@@ -24,7 +23,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.cutom_add_dialog.*
 import kotlinx.android.synthetic.main.fragment_a.*
 import org.json.JSONObject
 
@@ -312,7 +310,6 @@ class Fragment1 : Fragment() {
             list.addAll(getPhoneNumbers(sortText, searchText))
             //adapter 연결
             recyclerView1.adapter = contactAdapter(list)
-            //recyclerView1.adapter = FilterAdapter(list)
             recyclerView1.setHasFixedSize(true)
             startProcess()
         } else {
