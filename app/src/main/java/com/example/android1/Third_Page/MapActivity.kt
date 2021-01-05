@@ -49,7 +49,8 @@ class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, Acti
     var nearRestaurant:JSONObject? = null
     private var mMap: GoogleMap? = null
     private var currentMarker: Marker? = null
-
+    var radius: Int? = null
+    var cnt:Int = 0
 
 
     var locationCallback : LocationCallback = object : LocationCallback() {
@@ -124,6 +125,11 @@ class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, Acti
             .findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
         Log.d("Maps", "getMapAsync")
+        var intent = getIntent()
+        if(intent.hasExtra("radius")){
+            radius = intent.getIntExtra("radius", 500)
+            Log.d("radius",radius.toString())
+        }
 
         /* Place API */
         //var button = findViewById(R.id.fd_restaurant);
@@ -146,9 +152,9 @@ class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, Acti
                     Log.d("MyLocation", MyLocation.toString())
                     MyLocationMarker.position(MyLocation)
                     MyLocationMarker.title("내 위치") // marker name
-                    MyLocationMarker.snippet("되면 좋겠다") // marker specification
+                    //MyLocationMarker.snippet("되면 좋겠다") // marker specification DO
                     mMap?.addMarker(MyLocationMarker)
-                    mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(MyLocation, 10F))
+                    mMap?.moveCamera(CameraUpdateFactory.newLatLng(MyLocation))
                 }
             }
 
@@ -156,7 +162,7 @@ class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, Acti
                 val obj = jArray.getJSONObject(i)
                 val name = obj.getString("name")
 //                val menu = obj.getString("menu")
-                val menu = obj.getString("business_status")
+                val menu = obj.getString("vicinity")
                 val geo = obj.getJSONObject("geometry")
                 Log.d("geo", geo.toString())
                 val coordinate = geo.getJSONObject("location")
@@ -174,9 +180,11 @@ class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, Acti
                 val restaurantmarker = MarkerOptions()
                 restaurantmarker.position(LatLng(item.latitude, item.longitude))
                 restaurantmarker.title(item.name)
-                restaurantmarker.snippet(item.menu)
+                restaurantmarker.snippet("${item.menu} \n${item.distance}m")
                 mMap?.addMarker(restaurantmarker)
+                cnt++
             }
+            Toast.makeText(this, "${cnt}개의 음식집을 탐색하였습니다.", Toast.LENGTH_SHORT).show()
         }
 
     }
@@ -470,9 +478,9 @@ class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, Acti
                 Log.d("MyLocation", MyLocation.toString())
                 MyLocationMarker.position(MyLocation)
                 MyLocationMarker.title("내 위치") // marker name
-                MyLocationMarker.snippet("되면 좋겠다") // marker specification
+                //MyLocationMarker.snippet("되면 좋겠다") // marker specification
                 mMap?.addMarker(MyLocationMarker)
-                mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(MyLocation, 10F))
+                mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(MyLocation, 14F))
             }
         }
     }
@@ -485,16 +493,16 @@ class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, Acti
         if (previous_marker != null)
             previous_marker!!.clear() //지역정보 마커 클리어
         var key = "AIzaSyDzepISLlztmiLEUZOPEaD8qb5AJFZFLXc"
-       /* NRPlaces.Builder()
-            .listener(this@MapActivity)
-            .key("AIzaSyCPwsBG05QWc33R5bQH3FOxFwsJOu-JO9g")
-            .latlng(location.latitude, location.longitude) //현재 위치
-            .radius(500) //500 미터 내에서 검색
-            .type(PlaceType.RESTAURANT) //음식점
-            .build()
-            .execute()
-            */
-        var makeUrlString = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=${key}&location=${location.latitude},${location.longitude}&radius=2500&type=restaurant"
+        /* NRPlaces.Builder()
+             .listener(this@MapActivity)
+             .key("AIzaSyCPwsBG05QWc33R5bQH3FOxFwsJOu-JO9g")
+             .latlng(location.latitude, location.longitude) //현재 위치
+             .radius(500) //500 미터 내에서 검색
+             .type(PlaceType.RESTAURANT) //음식점
+             .build()
+             .execute()
+             */
+        var makeUrlString = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=${key}&location=${location.latitude},${location.longitude}&radius=${radius}&type=restaurant"
         Log.d("TAG", makeUrlString)
 
         class UrlParsing (var baseUrl: String, var context: Context): Runnable {
@@ -560,8 +568,4 @@ class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, Acti
 
     override fun onPlacesStart() {
     }
-}
-
-class Restaurant(val restaurant: List<RestaurantMarker>){
-
 }

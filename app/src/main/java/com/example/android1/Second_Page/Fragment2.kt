@@ -18,6 +18,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.soundcloud.android.crop.Crop
 import kotlinx.android.synthetic.main.fragment_2.*
 import kotlinx.android.synthetic.main.image_item.*
 import java.io.ByteArrayOutputStream
@@ -63,17 +64,19 @@ class Fragment2 : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if(resultCode == RESULT_OK) {
+            /* gallery load */
             if (requestCode == pickImage) {
                 imageUri = data?.data
                 image_list.add(image_item(imageUri))
             }
-
+            /* camera load */
             if (requestCode == capturePhoto) {
                 var bundle: Bundle? = data?.getExtras()
                 var bitmap: Bitmap = bundle?.get("data") as Bitmap
                 var changedUri: Uri = BitmapToUri(this.requireContext(), bitmap)
                 image_list.add(image_item(changedUri))
             }
+
             refreshFragment(this, parentFragmentManager)
         }
     }

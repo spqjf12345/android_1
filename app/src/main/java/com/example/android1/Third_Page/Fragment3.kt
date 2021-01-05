@@ -21,8 +21,13 @@ class Fragment3 : Fragment(), OnMapReadyCallback {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        /*get map button*/
         btn_Location.setOnClickListener{
-            startActivity(Intent(it.context, MapActivity::class.java))
+            var radius = et_input_radius.text.toString()
+            var radiusInt: Int = Integer.parseInt(radius);
+            var intent = Intent(it.context, MapActivity::class.java)
+            intent.putExtra("radius", radiusInt)
+            startActivity(intent)
         }
     }
 

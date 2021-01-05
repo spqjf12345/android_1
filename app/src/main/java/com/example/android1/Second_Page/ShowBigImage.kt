@@ -1,5 +1,6 @@
 package com.example.android1
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.MotionEvent
@@ -19,5 +20,9 @@ class ShowBigImage: AppCompatActivity() {
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         finish()
         return true
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
     }
 }
