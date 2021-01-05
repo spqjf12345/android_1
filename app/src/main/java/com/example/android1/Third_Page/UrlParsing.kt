@@ -17,12 +17,21 @@ class UrlParsing (var baseUrl: String, var context: Context): Runnable{
             var result = elements.toString()
             result = result.replace("<body>","")
             result = result.replace("</body>","")
-            Log.d("JSON", result)
+            Log.d("JSON1", result)
+
             var jsonobj: JSONObject =  JSONObject(result)
-            Log.d("JSON", jsonobj.toString())
+            var jsonobj1: JSONObject =  JSONObject(result).getJSONObject("results")
+            Log.d("JSON2", jsonobj.getString("results"))
+            Log.d("JSON3", jsonobj1.toString())
+
+            //var getArray = jsonobj.getJSONArray("result")
+            //Log.d("getArray", getArray.toString())
+
         }catch (e:Exception){
             Log.d("TTT",e.toString())
         }
+
+
     }
 
 }

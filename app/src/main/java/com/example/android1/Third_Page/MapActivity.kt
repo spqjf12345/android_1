@@ -11,8 +11,7 @@ import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
-import android.os.Bundle
-import android.os.Looper
+import android.os.*
 import android.provider.Settings
 import android.util.Log
 import android.view.View
@@ -457,8 +456,9 @@ class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, Acti
     }
 
     override fun onPlacesFailure(e: PlacesException?) {
-        TODO("Not yet implemented")
     }
+
+
     fun showPlaceInformation(location:LatLng){
         mMap?.clear()
         if (previous_marker != null)
@@ -481,7 +481,13 @@ class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, Acti
         t.join()
 
 
+
+
+
+
     }
+
+
 
     override fun onPlacesSuccess(places: List<Place>?) {
         runOnUiThread(Runnable() {
