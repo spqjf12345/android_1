@@ -11,7 +11,8 @@ import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
-import android.os.*
+import android.os.Bundle
+import android.os.Looper
 import android.provider.Settings
 import android.util.Log
 import android.view.View
@@ -36,6 +37,7 @@ import okhttp3.*
 import org.json.JSONObject
 import org.jsoup.Jsoup
 import java.io.IOException
+import java.lang.Exception
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
@@ -44,9 +46,12 @@ import kotlin.collections.HashSet
 class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, ActivityCompat.OnRequestPermissionsResultCallback {
     //private lateinit var fusedLocationClient: FusedLocationProviderClient
     var previous_marker: ArrayList<Marker>? = null
-    public var parsingResult: String? = null
+    var nearRestaurant:JSONObject? = null
     private var mMap: GoogleMap? = null
     private var currentMarker: Marker? = null
+
+
+
     var locationCallback : LocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
             super.onLocationResult(locationResult)
@@ -90,6 +95,7 @@ class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, Acti
 
 
     lateinit var MyLocation: LatLng
+    @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getWindow().setFlags(
@@ -126,25 +132,39 @@ class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, Acti
 
             val restaurantMarker = ArrayList<RestaurantMarker>()
 
-            val assetManager = resources.assets
-            val inputStream = assetManager.open("Restaurant.json")
-            val jsonString = inputStream.bufferedReader().use{it.readText()}
-            val jObject = JSONObject(jsonString)
-            val jArray = jObject.getJSONArray("Restaurant")
+//            val assetManager = resources.assets
+//            val inputStream = assetManager.open("Restaurant.json")
+//            val jsonString = inputStream.bufferedReader().use{it.readText()}
+//            val jObject = JSONObject(jsonString)
+//            val jArray = jObject.getJSONArray("Restaurant")
+            val jArray = nearRestaurant!!.getJSONArray("results")
+
+            mFusedLocationClient!!.lastLocation.addOnSuccessListener { location ->
+                if(location != null){
+                    val MyLocationMarker = MarkerOptions()
+                    MyLocation = LatLng(location.latitude, location.longitude)
+                    Log.d("MyLocation", MyLocation.toString())
+                    MyLocationMarker.position(MyLocation)
+                    MyLocationMarker.title("내 위치") // marker name
+                    MyLocationMarker.snippet("되면 좋겠다") // marker specification
+                    mMap?.addMarker(MyLocationMarker)
+                    mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(MyLocation, 10F))
+                }
+            }
 
             for (i in 0 until jArray.length()){
                 val obj = jArray.getJSONObject(i)
                 val name = obj.getString("name")
-                val menu = obj.getString("menu")
-//                val menu = obj.getString("business_status")
-//                val geo = obj.getJSONObject("geometry")
-//                Log.d("geo", geo.toString())
-//                val coordinate = geo.getJSONObject("location")
-//                Log.d("geo_location", coordinate.toString())
-//                val latitude = coordinate.getDouble("lat")
-//                val longitude = coordinate.getDouble("lng")
-                val latitude = obj.getDouble("latitude")
-                val longitude = obj.getDouble("longitude")
+//                val menu = obj.getString("menu")
+                val menu = obj.getString("business_status")
+                val geo = obj.getJSONObject("geometry")
+                Log.d("geo", geo.toString())
+                val coordinate = geo.getJSONObject("location")
+                Log.d("geo_location", coordinate.toString())
+                val latitude = coordinate.getDouble("lat")
+                val longitude = coordinate.getDouble("lng")
+//                val latitude = obj.getDouble("latitude")
+//                val longitude = obj.getDouble("longitude")
                 restaurantMarker.add(RestaurantMarker(name, menu, latitude, longitude))
             }
 
@@ -456,9 +476,8 @@ class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, Acti
     }
 
     override fun onPlacesFailure(e: PlacesException?) {
+        TODO("Not yet implemented")
     }
-
-
     fun showPlaceInformation(location:LatLng){
         mMap?.clear()
         if (previous_marker != null)
@@ -476,18 +495,31 @@ class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, Acti
         var makeUrlString = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=${key}&location=${location.latitude},${location.longitude}&radius=2500&type=restaurant"
         Log.d("TAG", makeUrlString)
 
+        class UrlParsing (var baseUrl: String, var context: Context): Runnable {
+            @Synchronized
+            override fun run() {
+                try{
+                    var doc = Jsoup.connect(baseUrl).ignoreContentType(true).get()
+                    var elements = doc.select("body")
+                    //Log.d("JSON", doc.toString())
+                    var result = elements.toString()
+                    result = result.replace("<body>","")
+                    result = result.replace("</body>","")
+                    Log.d("JSON", result)
+                    nearRestaurant = JSONObject(result)
+                    Log.d("JSON", nearRestaurant.toString())
+                }catch (e: Exception){
+                    Log.d("TTT",e.toString())
+                }
+            }
+
+        }
+
         var t = Thread(UrlParsing(makeUrlString, applicationContext))
         t.start()
         t.join()
 
-
-
-
-
-
     }
-
-
 
     override fun onPlacesSuccess(places: List<Place>?) {
         runOnUiThread(Runnable() {
