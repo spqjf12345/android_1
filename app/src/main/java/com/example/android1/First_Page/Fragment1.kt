@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.ContactsContract
+import android.provider.ContactsContract.CommonDataKinds.Phone.NUMBER
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -237,6 +238,7 @@ class Fragment1 : Fragment() {
 
         val list = ArrayList<list_item>()
         val phoneUri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI
+        Log.d("phoneUri",phoneUri.toString() )
         val projections = arrayOf(ContactsContract.CommonDataKinds.Phone.CONTACT_ID
                 , ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME
                 , ContactsContract.CommonDataKinds.Phone.NUMBER)

@@ -244,10 +244,7 @@ class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, Acti
                 cafemarker.position(LatLng(item.latitude, item.longitude))
                 cafemarker.title(item.name)
                 cafemarker.snippet("${item.distance}m, ${item.menu}")
-                //restaurantmarker.icon(url: "")
                 mMap?.addMarker(cafemarker)
-
-                //cafeMarker.icon(BitmapDescriptorFactory.fromBitmap(smallMarker))
                 cnt++
             }
             Toast.makeText(this, "${cnt}개의 카페를 탐색하였습니다.", Toast.LENGTH_SHORT).show()

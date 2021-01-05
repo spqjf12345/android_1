@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import com.example.android1.Third_Page.MapActivity
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
 import kotlinx.android.synthetic.main.fragment_3.*
 
 
@@ -39,8 +38,6 @@ class Fragment3 : Fragment(), OnMapReadyCallback {
         return rootView
     }
 
-    override fun onMapReady(p0: GoogleMap?) {
-        TODO("Not yet implemented")
-    }
+    override fun onMapReady(p0: GoogleMap?) {}
 
 }

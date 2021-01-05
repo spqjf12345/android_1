@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
 
         adapter.addFragment(Fragment1(), "음식점 도감")
         adapter.addFragment(Fragment2(), "음식과의 추억")
-        adapter.addFragment(Fragment3(), "주변 탐지")
+        adapter.addFragment(Fragment3(), "주변 검색")
         viewPager.adapter = adapter
         tabLayout.setupWithViewPager(viewPager)
         //권한 허용
