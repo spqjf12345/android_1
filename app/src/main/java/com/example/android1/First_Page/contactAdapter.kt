@@ -85,21 +85,15 @@ class contactAdapter(val JsonList:ArrayList<list_item>): RecyclerView.Adapter<co
                     val inflater = LayoutInflater.from(view?.context)
                     val dialogView = inflater.inflate(R.layout.custom_dialog, null)
                     val dialogText = dialogView.findViewById<TextView>(R.id.dg_content)
+                    dialogText.setText("${JsonList.get(curPos).name}\n${JsonList.get(curPos).number}\n삭제하시겠습니까?")
                     builder.setView(dialogView)
+                        .setTitle("연락처 삭제")
+                        //.setMessage(dialogText.text.toString())
                         .setPositiveButton("OK") { dialogInterface, i ->
-                            builder.setTitle(dialogText.text.toString())
-
-                            //remove
+                            //builder.setTitle(dialogText.text.toString())
                             JsonList.remove(JsonList.get(curPos))
                             notifyItemRemoved(curPos)
-
-                            Log.d("JsonList", JsonList.toString())
-                            Log.d("JsonList_size", JsonList.size.toString())
                             notifyItemRangeChanged(curPos, JsonList.size)
-                            Log.d("JsonList", JsonList.toString())
-                            Log.d("JsonList_size", JsonList.size.toString())
-                            //Toast.makeText(view?.context, "파일이 삭제되었습니다.", Toast.LENGTH_SHORT).show()
-
                         }
                         .setNegativeButton("CANCEL") { dialogInterface, i ->
                         }

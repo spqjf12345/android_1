@@ -44,18 +44,14 @@ class ImageAdapter(val imageList:ArrayList<image_item>):
                     val inflater = LayoutInflater.from(view?.context)
                     val dialogView = inflater.inflate(R.layout.custom_dialog, null)
                     val dialogText = dialogView.findViewById<TextView>(R.id.dg_content)
+                    dialogText.setText("이미지를 삭제하시겠습니까?")
                     builder.setView(dialogView)
+                        .setTitle("이미지 삭제")
                         .setPositiveButton("확인") { dialogInterface, i ->
                             builder.setTitle(dialogText.text.toString())
-
                             imageList.remove(imageList.get(curPos))
                             notifyItemRemoved(curPos)
-                            Log.d("JsonList", imageList.toString())
-                            Log.d("JsonList_size", imageList.size.toString())
                             notifyItemRangeChanged(curPos,imageList.size)
-                            Log.d("JsonList", imageList.toString())
-                            Log.d("JsonList_size", imageList.size.toString())
-                            //Toast.makeText(view?.context, "파일이 삭제되었습니다.", Toast.LENGTH_SHORT).show()
                         }
                         .setNegativeButton("취소") { dialogInterface, i ->
                         }

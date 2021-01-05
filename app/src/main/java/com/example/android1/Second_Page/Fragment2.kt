@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_2.*
+import kotlinx.android.synthetic.main.image_item.*
 import java.io.ByteArrayOutputStream
 
 class Fragment2 : Fragment() {
@@ -60,18 +61,18 @@ class Fragment2 : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+
         if(resultCode == RESULT_OK) {
             if (requestCode == pickImage) {
                 imageUri = data?.data
                 image_list.add(image_item(imageUri))
-                //gallery.setImageURI(imageUri)
             }
+
             if (requestCode == capturePhoto) {
                 var bundle: Bundle? = data?.getExtras()
                 var bitmap: Bitmap = bundle?.get("data") as Bitmap
                 var changedUri: Uri = BitmapToUri(this.requireContext(), bitmap)
                 image_list.add(image_item(changedUri))
-                //gallery.setImageBitmap(bitmap)
             }
             refreshFragment(this, parentFragmentManager)
         }

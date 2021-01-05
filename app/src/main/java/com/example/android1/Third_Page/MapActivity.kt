@@ -11,6 +11,7 @@ import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
+import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
@@ -24,7 +25,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.android1.R
 import com.google.android.gms.location.*
-import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
@@ -34,7 +34,12 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.googlemaplayer.*
 import noman.googleplaces.*
 import org.json.JSONObject
+import java.io.BufferedReader
 import java.io.IOException
+import java.io.InputStreamReader
+import java.io.Reader
+import java.lang.RuntimeException
+import java.net.URL
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
@@ -452,30 +457,106 @@ class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, Acti
                 mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(MyLocation, 10F))
             }
         }
+
+
     }
 
     override fun onPlacesFailure(e: PlacesException?) {
         TODO("Not yet implemented")
     }
+
+    @Throws(IOException::class)
+    private fun readAll(rd: Reader): String? {
+        val sb = java.lang.StringBuilder()
+        var cp: Int
+
+        while (rd.read().also { cp = it } != -1) {
+            sb.run { append(cp.toChar()) }
+        }
+        return sb.toString()
+    }
+
     fun showPlaceInformation(location:LatLng){
         mMap?.clear()
         if (previous_marker != null)
             previous_marker!!.clear() //지역정보 마커 클리어
         var key = "AIzaSyDzepISLlztmiLEUZOPEaD8qb5AJFZFLXc"
-       /* NRPlaces.Builder()
-            .listener(this@MapActivity)
-            .key("AIzaSyCPwsBG05QWc33R5bQH3FOxFwsJOu-JO9g")
-            .latlng(location.latitude, location.longitude) //현재 위치
-            .radius(500) //500 미터 내에서 검색
-            .type(PlaceType.RESTAURANT) //음식점
-            .build()
-            .execute()
-            */
-        var makeUrlString: String = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=${key}&location=${location.latitude},${location.longitude}&radius=500&type=restaurant"
-        Log.d("TAG",makeUrlString)
+        NRPlaces.Builder().listener(this@MapActivity)
+        NRPlaces.Builder().key(key)
+        NRPlaces.Builder().latlng(location.latitude, location.longitude) //현재 위치
+        NRPlaces.Builder().radius(500) //500 미터 내에서 검색
+        NRPlaces.Builder().type(PlaceType.RESTAURANT) //음식점
+        NRPlaces.Builder().build()
+
+       // NRPlaces.Builder().excute()
+
+
+
+
+        var mResponseBuilder = StringBuilder()
+        //var jobj = JSONObject(mResponseBuilder.toString())
+        //var jArr = jobj.getJSONArray("result")
+
+       // var makeUrlString: String = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=${key}&location=${location.latitude},${location.longitude}&radius=500&type=restaurant"
+        //var json = readJSONFromUrl(makeUrlString)
+        //Log.d("JSON", json.toString())
+        //Log.d("JSON", json.get("id"))
+
+
+
+       // val httpClient: HttpClient = DefaultHttpClient()
+       // val httpPost = HttpPost(makeUrlString)
+       // httpPost.setEntity(UrlEncodedFormEntity(ArrayList<NameValuePair>()))
+       // val httpEntity: HttpEntity = httpClient.execute(httpPost).getEntity()
+       // val stream: InputStream = httpEntity.getContent()
+        //val bReader = BufferedReader(InputStreamReader(stream, "utf-8"), 8)
+       // val sBuilder = java.lang.StringBuilder()
+
+
+
+        //var result = URL(makeUrlString).openConnection()
+
+        //result.connectTimeout
+       // result.readTimeout
+
+
+        //var isr = InputStreamReader(result.getInputStream())
+        //var br = BufferedReader(isr)
+        //Log.d(TAG, br.readLine())
+       // var str: String = ""
+        /*while((str = br.readLine() != null)){
+
+        }*/
+
+        /*val inr:BufferedReader = BufferedReader (InputStreamReader(result.openStream()))
+        Log.d(TAG, inr.toString())
+        var inputLine: String
+        do{
+            inputLine = inr.readLine()
+            mResponseBuilder.append(inputLine)
+            Log.d("mResponseBuilder", mResponseBuilder.toString())
+        }while( inputLine!=null)
+        inr.close()*/
 
 
     }
+
+    fun readJSONFromUrl(url: String):JSONObject {
+        var stream = URL(url).openStream()
+        val rd = BufferedReader(InputStreamReader(stream, "utf-8"), 8)
+        var jsonText: String = ""
+
+        val sb = java.lang.StringBuilder()
+        var cp: Int
+
+        while (rd.read().also { cp = it } != -1) {
+            sb.run { append(cp.toChar()) }
+        }
+        jsonText = sb.toString()
+        var json = JSONObject(jsonText)
+        return json
+    }
+
 
     override fun onPlacesSuccess(places: List<Place>?) {
         runOnUiThread(Runnable() {
@@ -514,4 +595,5 @@ class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, Acti
 
     override fun onPlacesStart() {
     }
+
 }

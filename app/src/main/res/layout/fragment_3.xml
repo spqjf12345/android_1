@@ -20,7 +20,7 @@
         android:id="@+id/recFood"
         android:layout_width="94dp"
         android:layout_height="38dp"
-        android:text="맛집추천"
+        android:text="주변 음식점 찾기"
         android:textSize="20sp"
         android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"

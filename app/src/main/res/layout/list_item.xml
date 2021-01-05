@@ -10,11 +10,10 @@
         android:id="@+id/tv_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginLeft="32dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
         android:text="name"
-        android:textColor="#000000"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toTopOf="@+id/tv_number"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -23,45 +22,31 @@
         android:id="@+id/tv_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginLeft="32dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
         android:text="number"
-        android:textColor="#000000"
+        android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_name" />
 
-    <CheckBox
-        android:id="@+id/checkBox"
-        android:layout_width="39dp"
-        android:layout_height="26dp"
-        android:textColor="#000000"
-        android:textSize="8sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.512" />
-
-    <ImageButton
-        android:id="@+id/iv_call"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginRight="10dp"
-        app:layout_constraintEnd_toStartOf="@+id/iv_mms"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/sym_action_call" />
-
     <ImageButton
         android:id="@+id/iv_mms"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
-        android:layout_marginRight="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@android:drawable/ic_menu_send" />
+
+    <ImageButton
+        android:id="@+id/iv_call"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintEnd_toStartOf="@+id/iv_mms"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@android:drawable/ic_menu_call" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
