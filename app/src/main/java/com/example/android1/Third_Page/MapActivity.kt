@@ -43,7 +43,6 @@ import kotlin.collections.HashSet
 class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, ActivityCompat.OnRequestPermissionsResultCallback {
     //private lateinit var fusedLocationClient: FusedLocationProviderClient
     var previous_marker: ArrayList<Marker>? = null
-    val restaurantMarker = ArrayList<RestaurantMarker>()
 
     private var mMap: GoogleMap? = null
     private var currentMarker: Marker? = null
@@ -123,28 +122,38 @@ class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, Acti
         //var button = findViewById(R.id.fd_restaurant);
         fd_restaurant?.setOnClickListener {
             showPlaceInformation(MyLocation);
-        }
 
-        val assetManager = resources.assets
-        val inputStream = assetManager.open("Restaurant.json")
-        val jsonString = inputStream.bufferedReader().use{it.readText()}
-        val jObject = JSONObject(jsonString)
-        val jArray = jObject.getJSONArray("Restaurant")
+            val restaurantMarker = ArrayList<RestaurantMarker>()
 
-        for (i in 0 until jArray.length()){
-            val obj = jArray.getJSONObject(i)
-            val name = obj.getString("name")
-            val menu = obj.getString("menu")
-//            val menu = obj.getString("business_status")
-//            val geo = obj.getJSONObject("geometry")
-//            Log.d("geo", geo.toString())
-//            val coordinate = geo.getJSONObject("location")
-//            Log.d("geo_location", coordinate.toString())
-//            val latitude = coordinate.getDouble("lat")
-//            val longitude = coordinate.getDouble("lng")
-            val latitude = obj.getDouble("latitude")
-            val longitude = obj.getDouble("longitude")
-            restaurantMarker.add(RestaurantMarker(name, menu, latitude, longitude))
+            val assetManager = resources.assets
+            val inputStream = assetManager.open("Restaurant.json")
+            val jsonString = inputStream.bufferedReader().use{it.readText()}
+            val jObject = JSONObject(jsonString)
+            val jArray = jObject.getJSONArray("Restaurant")
+
+            for (i in 0 until jArray.length()){
+                val obj = jArray.getJSONObject(i)
+                val name = obj.getString("name")
+                val menu = obj.getString("menu")
+//                val menu = obj.getString("business_status")
+//                val geo = obj.getJSONObject("geometry")
+//                Log.d("geo", geo.toString())
+//                val coordinate = geo.getJSONObject("location")
+//                Log.d("geo_location", coordinate.toString())
+//                val latitude = coordinate.getDouble("lat")
+//                val longitude = coordinate.getDouble("lng")
+                val latitude = obj.getDouble("latitude")
+                val longitude = obj.getDouble("longitude")
+                restaurantMarker.add(RestaurantMarker(name, menu, latitude, longitude))
+            }
+
+            for (item:RestaurantMarker in restaurantMarker){
+                val restaurantmarker = MarkerOptions()
+                restaurantmarker.position(LatLng(item.latitude, item.longitude))
+                restaurantmarker.title(item.name)
+                restaurantmarker.snippet(item.menu)
+                mMap?.addMarker(restaurantmarker)
+            }
         }
 
     }
@@ -443,14 +452,6 @@ class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, Acti
                 mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(MyLocation, 10F))
             }
         }
-
-        for (item:RestaurantMarker in restaurantMarker){
-            val restaurantmarker = MarkerOptions()
-            restaurantmarker.position(LatLng(item.latitude, item.longitude))
-            restaurantmarker.title(item.name)
-            restaurantmarker.snippet(item.menu)
-            mMap?.addMarker(restaurantmarker)
-        }
     }
 
     override fun onPlacesFailure(e: PlacesException?) {
@@ -472,6 +473,7 @@ class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, Acti
             */
         var makeUrlString: String = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=${key}&location=${location.latitude},${location.longitude}&radius=500&type=restaurant"
         Log.d("TAG",makeUrlString)
+
 
     }
 
