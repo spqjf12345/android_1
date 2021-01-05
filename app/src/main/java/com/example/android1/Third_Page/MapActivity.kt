@@ -163,9 +163,11 @@ class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, Acti
                 Log.d("geo_location", coordinate.toString())
                 val latitude = coordinate.getDouble("lat")
                 val longitude = coordinate.getDouble("lng")
+                val distance = FloatArray(1)
+                Location.distanceBetween(MyLocation.latitude, MyLocation.longitude, latitude, longitude, distance)
 //                val latitude = obj.getDouble("latitude")
 //                val longitude = obj.getDouble("longitude")
-                restaurantMarker.add(RestaurantMarker(name, menu, latitude, longitude))
+                restaurantMarker.add(RestaurantMarker(name, menu, latitude, longitude, distance[0]))
             }
 
             for (item:RestaurantMarker in restaurantMarker){
