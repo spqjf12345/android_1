@@ -240,6 +240,9 @@ class Fragment1 : Fragment() {
         val projections = arrayOf(ContactsContract.CommonDataKinds.Phone.CONTACT_ID
                 , ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME
                 , ContactsContract.CommonDataKinds.Phone.NUMBER)
+
+
+
         val resolver = activity?.contentResolver
         var wheneClause:String? = null
 

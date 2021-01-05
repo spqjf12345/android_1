@@ -7,6 +7,8 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
@@ -24,7 +26,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.android1.R
 import com.google.android.gms.location.*
-import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
@@ -32,12 +33,12 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.googlemaplayer.*
-import noman.googleplaces.*
-import okhttp3.*
+import noman.googleplaces.Place
+import noman.googleplaces.PlacesException
+import noman.googleplaces.PlacesListener
 import org.json.JSONObject
 import org.jsoup.Jsoup
 import java.io.IOException
-import java.lang.Exception
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
@@ -47,6 +48,7 @@ class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, Acti
     //private lateinit var fusedLocationClient: FusedLocationProviderClient
     var previous_marker: ArrayList<Marker>? = null
     var nearRestaurant:JSONObject? = null
+    var nearCafe:JSONObject? = null
     private var mMap: GoogleMap? = null
     private var currentMarker: Marker? = null
     var radius: Int? = null
@@ -143,7 +145,6 @@ class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, Acti
 //            val jsonString = inputStream.bufferedReader().use{it.readText()}
 //            val jObject = JSONObject(jsonString)
 //            val jArray = jObject.getJSONArray("Restaurant")
-            val jArray = nearRestaurant!!.getJSONArray("results")
 
             mFusedLocationClient!!.lastLocation.addOnSuccessListener { location ->
                 if(location != null){
@@ -158,6 +159,7 @@ class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, Acti
                 }
             }
 
+            val jArray = nearRestaurant!!.getJSONArray("results")
             for (i in 0 until jArray.length()){
                 val obj = jArray.getJSONObject(i)
                 val name = obj.getString("name")
@@ -175,16 +177,80 @@ class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, Acti
 //                val longitude = obj.getDouble("longitude")
                 restaurantMarker.add(RestaurantMarker(name, menu, latitude, longitude, distance[0]))
             }
-
+            val bitmapdraw: BitmapDrawable = resources.getDrawable(R.drawable.green_marker) as BitmapDrawable
+            val b: Bitmap = bitmapdraw.bitmap
+            val smallMarker = Bitmap.createScaledBitmap(b, 100, 100, false)
+            cnt = 0
             for (item:RestaurantMarker in restaurantMarker){
                 val restaurantmarker = MarkerOptions()
                 restaurantmarker.position(LatLng(item.latitude, item.longitude))
                 restaurantmarker.title(item.name)
-                restaurantmarker.snippet("${item.menu} \n${item.distance}m")
+                restaurantmarker.snippet("${item.distance}m, ${item.menu}")
+                //restaurantmarker.icon(url: "")
                 mMap?.addMarker(restaurantmarker)
+
+                restaurantmarker.icon(BitmapDescriptorFactory.fromBitmap(smallMarker))
                 cnt++
             }
             Toast.makeText(this, "${cnt}개의 음식집을 탐색하였습니다.", Toast.LENGTH_SHORT).show()
+        }
+
+
+        /*cafe load */
+        fd_cafe.setOnClickListener{
+            showPlaceInformation(MyLocation);
+
+            val cafeMarker = ArrayList<RestaurantMarker>()
+
+
+            mFusedLocationClient!!.lastLocation.addOnSuccessListener { location ->
+                if(location != null){
+                    val MyLocationMarker = MarkerOptions()
+                    MyLocation = LatLng(location.latitude, location.longitude)
+                    Log.d("MyLocation", MyLocation.toString())
+                    MyLocationMarker.position(MyLocation)
+                    MyLocationMarker.title("내 위치") // marker name
+                    mMap?.addMarker(MyLocationMarker)
+                    mMap?.moveCamera(CameraUpdateFactory.newLatLng(MyLocation))
+                }
+            }
+
+
+            val jArray = nearCafe!!.getJSONArray("results")
+            for (i in 0 until jArray.length()){
+                val obj = jArray.getJSONObject(i)
+                val name = obj.getString("name")
+//                val menu = obj.getString("menu")
+                val menu = obj.getString("vicinity")
+                val geo = obj.getJSONObject("geometry")
+                Log.d("geo", geo.toString())
+                val coordinate = geo.getJSONObject("location")
+                Log.d("geo_location", coordinate.toString())
+                val latitude = coordinate.getDouble("lat")
+                val longitude = coordinate.getDouble("lng")
+                val distance = FloatArray(1)
+                Location.distanceBetween(MyLocation.latitude, MyLocation.longitude, latitude, longitude, distance)
+//                val latitude = obj.getDouble("latitude")
+//                val longitude = obj.getDouble("longitude")
+                cafeMarker.add(RestaurantMarker(name, menu, latitude, longitude, distance[0]))
+            }
+
+            val bitmapdraw: BitmapDrawable = resources.getDrawable(R.drawable.green_marker) as BitmapDrawable
+            val b: Bitmap = bitmapdraw.bitmap
+            val smallMarker = Bitmap.createScaledBitmap(b, 100, 100, false)
+            cnt = 0
+            for (item:RestaurantMarker in cafeMarker){
+                val cafemarker = MarkerOptions()
+                cafemarker.position(LatLng(item.latitude, item.longitude))
+                cafemarker.title(item.name)
+                cafemarker.snippet("${item.distance}m, ${item.menu}")
+                //restaurantmarker.icon(url: "")
+                mMap?.addMarker(cafemarker)
+
+                //cafeMarker.icon(BitmapDescriptorFactory.fromBitmap(smallMarker))
+                cnt++
+            }
+            Toast.makeText(this, "${cnt}개의 카페를 탐색하였습니다.", Toast.LENGTH_SHORT).show()
         }
 
     }
@@ -199,6 +265,11 @@ class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, Acti
         markerOptions.position(SEOUL)
         markerOptions.title("서울")
         markerOptions.snippet("한국의 수도")
+        val bitmapdraw: BitmapDrawable = resources.getDrawable(R.drawable.green_marker) as BitmapDrawable
+        val b: Bitmap = bitmapdraw.bitmap
+        val smallMarker = Bitmap.createScaledBitmap(b, 100, 100, false)
+        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(smallMarker))
+
         mMap!!.addMarker(markerOptions)
 
         mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(SEOUL, 10F))
@@ -475,9 +546,10 @@ class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, Acti
             if(location != null){
                 val MyLocationMarker = MarkerOptions()
                 MyLocation = LatLng(location.latitude, location.longitude)
+                Log.d("latlong", location.latitude.toString() + " " + location.longitude.toString())
                 Log.d("MyLocation", MyLocation.toString())
                 MyLocationMarker.position(MyLocation)
-                MyLocationMarker.title("내 위치") // marker name
+                MyLocationMarker.title("현 위치") // marker name
                 //MyLocationMarker.snippet("되면 좋겠다") // marker specification
                 mMap?.addMarker(MyLocationMarker)
                 mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(MyLocation, 14F))
@@ -493,26 +565,21 @@ class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, Acti
         if (previous_marker != null)
             previous_marker!!.clear() //지역정보 마커 클리어
         var key = "AIzaSyDzepISLlztmiLEUZOPEaD8qb5AJFZFLXc"
-        /* NRPlaces.Builder()
-             .listener(this@MapActivity)
-             .key("AIzaSyCPwsBG05QWc33R5bQH3FOxFwsJOu-JO9g")
-             .latlng(location.latitude, location.longitude) //현재 위치
-             .radius(500) //500 미터 내에서 검색
-             .type(PlaceType.RESTAURANT) //음식점
-             .build()
-             .execute()
-             */
-        var makeUrlString = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=${key}&location=${location.latitude},${location.longitude}&radius=${radius}&type=restaurant"
-        Log.d("TAG", makeUrlString)
 
-        class UrlParsing (var baseUrl: String, var context: Context): Runnable {
-            @Synchronized
-            override fun run() {
-                try{
-                    var doc = Jsoup.connect(baseUrl).ignoreContentType(true).get()
-                    var elements = doc.select("body")
-                    //Log.d("JSON", doc.toString())
-                    var result = elements.toString()
+        var restaurantURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=${key}&location=${location.latitude},${location.longitude}&radius=${radius}&type=restaurant"
+        var cafeURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=${key}&location=${location.latitude},${location.longitude}&radius=${radius}&type=cafe"
+
+        Log.d("res", restaurantURL.toString())
+        Log.d("TAG", restaurantURL)
+
+        class UrlParsing_restaurant (var baseUrl: String, var context: Context): Runnable {
+                        @Synchronized
+                        override fun run() {
+                            try{
+                                var doc = Jsoup.connect(baseUrl).ignoreContentType(true).get()
+                                var elements = doc.select("body")
+                                //Log.d("JSON", doc.toString())
+                                var result = elements.toString()
                     result = result.replace("<body>","")
                     result = result.replace("</body>","")
                     Log.d("JSON", result)
@@ -525,9 +592,35 @@ class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, Acti
 
         }
 
-        var t = Thread(UrlParsing(makeUrlString, applicationContext))
+        class UrlParsing_cafe (var baseUrl: String, var context: Context): Runnable {
+            @Synchronized
+            override fun run() {
+                try{
+                    var doc = Jsoup.connect(baseUrl).ignoreContentType(true).get()
+                    var elements = doc.select("body")
+                    //Log.d("JSON", doc.toString())
+                    var result = elements.toString()
+                    result = result.replace("<body>","")
+                    result = result.replace("</body>","")
+                    Log.d("JSON", result)
+                    nearCafe = JSONObject(result)
+                    Log.d("JSON", nearCafe.toString())
+                }catch (e: Exception){
+                    Log.d("TTT",e.toString())
+                }
+            }
+
+        }
+
+        var t = Thread(UrlParsing_restaurant(restaurantURL, applicationContext))
         t.start()
         t.join()
+
+        var cafe = Thread(UrlParsing_cafe(cafeURL, applicationContext))
+        cafe.start()
+        cafe.join()
+
+
 
     }
 

@@ -25,9 +25,9 @@ class MainActivity : AppCompatActivity() {
         //페이지어뎁터를 받아와 프래그멘트 실제 연결
         val adapter = PageAdapter(supportFragmentManager)
 
-        adapter.addFragment(Fragment1(), "연락처")
-        adapter.addFragment(Fragment2(), "사진")
-        adapter.addFragment(Fragment3(), "자유")
+        adapter.addFragment(Fragment1(), "음식점 도감")
+        adapter.addFragment(Fragment2(), "음식과의 추억")
+        adapter.addFragment(Fragment3(), "주변 탐지")
         viewPager.adapter = adapter
         tabLayout.setupWithViewPager(viewPager)
         //권한 허용
