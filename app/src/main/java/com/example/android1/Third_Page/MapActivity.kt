@@ -1,5 +1,5 @@
 package com.example.android1.Third_Page
-//package com.example.android1
+
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
@@ -33,7 +33,9 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.googlemaplayer.*
 import noman.googleplaces.*
+import okhttp3.*
 import org.json.JSONObject
+import org.jsoup.Jsoup
 import java.io.IOException
 import java.util.*
 import kotlin.collections.ArrayList
@@ -43,7 +45,7 @@ import kotlin.collections.HashSet
 class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, ActivityCompat.OnRequestPermissionsResultCallback {
     //private lateinit var fusedLocationClient: FusedLocationProviderClient
     var previous_marker: ArrayList<Marker>? = null
-
+    public var parsingResult: String? = null
     private var mMap: GoogleMap? = null
     private var currentMarker: Marker? = null
     var locationCallback : LocationCallback = object : LocationCallback() {
@@ -471,8 +473,12 @@ class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, Acti
             .build()
             .execute()
             */
-        var makeUrlString: String = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=${key}&location=${location.latitude},${location.longitude}&radius=500&type=restaurant"
-        Log.d("TAG",makeUrlString)
+        var makeUrlString = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=${key}&location=${location.latitude},${location.longitude}&radius=2500&type=restaurant"
+        Log.d("TAG", makeUrlString)
+
+        var t = Thread(UrlParsing(makeUrlString, applicationContext))
+        t.start()
+        t.join()
 
 
     }
@@ -514,4 +520,8 @@ class MapActivity: AppCompatActivity(), OnMapReadyCallback, PlacesListener, Acti
 
     override fun onPlacesStart() {
     }
+}
+
+class Restaurant(val restaurant: List<RestaurantMarker>){
+
 }
