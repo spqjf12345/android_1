@@ -1,8 +1,8 @@
 # 맛집 도감 (android app)
 
-## 설명 
+### 설명 
 This is a toy project to practice the Kotlin language.
-위 프로젝트는 3개의 탭으로 구성되어 있다.
+* 위 프로젝트는 3개의 탭으로 구성되어 있다.
 
 
 ### 1️⃣ tab - 음식점 도감
